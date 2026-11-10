@@ -933,19 +933,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\1ande\\.nuget\\packages\\": {}
+    "C:\\Users\\soer7\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\1ande\\RiderProjects\\SUMProject\\BookingTest\\BookingTest.csproj",
+      "projectUniqueName": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\BookingTest\\BookingTest.csproj",
       "projectName": "BookingTest",
-      "projectPath": "C:\\Users\\1ande\\RiderProjects\\SUMProject\\BookingTest\\BookingTest.csproj",
-      "packagesPath": "C:\\Users\\1ande\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\1ande\\RiderProjects\\SUMProject\\BookingTest\\obj\\",
+      "projectPath": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\BookingTest\\BookingTest.csproj",
+      "packagesPath": "C:\\Users\\soer7\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\BookingTest\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\1ande\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\soer7\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -958,8 +958,8 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\1ande\\RiderProjects\\SUMProject\\API\\API.csproj": {
-              "projectPath": "C:\\Users\\1ande\\RiderProjects\\SUMProject\\API\\API.csproj"
+            "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj": {
+              "projectPath": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj"
             }
           }
         }
@@ -1014,7 +1014,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.403/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Users\\soer7\\.dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
