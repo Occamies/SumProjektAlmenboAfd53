@@ -24,7 +24,7 @@ public class CreateReservationTests
     
     [Fact]
     public void NullPersonTest()
-    //Test for om 
+    //Test for om den giver fejl når der ikke er en person
     {
         var sut = new Item("testName", "testLocation");
     }
