@@ -3,7 +3,7 @@
 public class Reservation
 {
     private Guid Id { get; set; }
-    private DateTime StartDate { get; set; }
+    public DateTime StartDate { get; set; }
     private DateTime EndDate { get; set; }
     private string Code { get; set; }
     private Item Item  { get; set; }

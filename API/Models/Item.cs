@@ -5,7 +5,7 @@ public class Item
     private Guid Id { get; set; }
     private string Name { get; set; }
     private string Location { get; set; }
-    private List<Reservation> Reservations { get; set; }
+    public List<Reservation> Reservations { get; set; }
 
     public Item(string name, string location)
     {
