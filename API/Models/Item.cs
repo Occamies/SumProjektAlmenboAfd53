@@ -23,8 +23,11 @@ public class Item
         return Reservations[Reservations.Count - 1];
     }
 
-    public void CreateReservation(DateTime startDate, DateTime endDate, Person person)
+    public Reservation CreateReservation(DateTime startDate, DateTime endDate, Person person)
     {
-        Reservations.Add(new Reservation(startDate, endDate, this,  person));
+        var reservation = new Reservation(startDate, endDate, this, person);
+        Reservations.Add(reservation);
+        return reservation;
+
     }
 }

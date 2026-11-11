@@ -8,7 +8,7 @@ public class CreateReservationTests
 {
     //SUT = System Under Test
     [Fact]
-    public void SunshineTest()
+    public void CreateReservationSunshineTest()
     //Test for det perfekte scenarie hvor reservationen går igennem
     {
         var sut = new Item("testName", "testLocation");
