@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj": {}
+    "C:\\Users\\andre\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj": {
+    "C:\\Users\\andre\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj",
+        "projectUniqueName": "C:\\Users\\andre\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj",
-        "packagesPath": "C:\\Users\\soer7\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\soer7\\RiderProjects\\SumProjektAlmenboAfd53\\API\\obj\\",
+        "projectPath": "C:\\Users\\andre\\RiderProjects\\SumProjektAlmenboAfd53\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\andre\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\andre\\RiderProjects\\SumProjektAlmenboAfd53\\API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\soer7\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\andre\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\soer7\\.dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Users\\andre\\.dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
