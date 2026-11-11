@@ -1,4 +1,6 @@
-﻿using SUM.Model;
+﻿using System;
+using SUM.Model;
+using Xunit;
 
 namespace BookingTest;
 
