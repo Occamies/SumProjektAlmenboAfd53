@@ -4,7 +4,7 @@ namespace SUM.Model;
 
 public class Room : Item
 {
-    private List<Item> Inventory { get; set; }
+    public List<Item> Inventory { get; set; }
 
     public Room(string name, string location) : base(name, location)
     {

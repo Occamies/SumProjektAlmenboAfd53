@@ -1,9 +1,12 @@
-﻿using SUM.Model;
+﻿using System;
+using SUM.Model;
+using Xunit;
 
 namespace BookingTest;
 
 public class LastReservationTest
 {
+    // Tjekker at den nyeste resevation er den seneste
     [Fact]
     public void LastReservationSunshineTest()
     {

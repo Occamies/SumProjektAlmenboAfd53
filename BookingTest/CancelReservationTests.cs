@@ -6,6 +6,7 @@ namespace BookingTest;
 
 public class CancelReservationTests
 {
+    // Tjekker om resevarion kan annulleres Test
     [Fact]
     public void CancelReservationSunshineTest()
     {
@@ -25,6 +26,7 @@ public class CancelReservationTests
         Assert.Equal(reservationCount -1, item.Reservations.Count);
     }
     
+    // Tjekker om kodeord er forkert Test
     [Fact]
     public void wrongPassWordTest()
     {
