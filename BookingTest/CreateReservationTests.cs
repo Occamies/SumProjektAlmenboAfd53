@@ -6,7 +6,7 @@ namespace BookingTest;
 
 public class CreateReservationTests
 {
-    //SUT = System Under Test
+    //SUT = System Under Test.
     //Test for det perfekte scenarie hvor reservationen går igennem
     [Fact]
     public void CreateReservationSunshineTest()
