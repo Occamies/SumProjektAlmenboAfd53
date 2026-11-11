@@ -7,9 +7,9 @@ namespace BookingTest;
 public class CreateReservationTests
 {
     //SUT = System Under Test
+    //Test for det perfekte scenarie hvor reservationen går igennem
     [Fact]
     public void CreateReservationSunshineTest()
-    //Test for det perfekte scenarie hvor reservationen går igennem
     {
         var sut = new Item("testName", "testLocation");
         
@@ -25,9 +25,9 @@ public class CreateReservationTests
         Assert.Equal(reservationCount+1, newReservationCount);
     }
     
+    //Test for om den giver fejl når startDate er før slutdato
     [Fact]
     public void EndDateBeforeStartDateTest()
-    //Test for om den giver fejl når startDate er før slutdato
     {
         var sut = new Item("testName", "testLocation");
         
@@ -44,9 +44,9 @@ public class CreateReservationTests
         
     }
     
+    //Test for om den giver fejl når der Startdato er før nuværende dato
     [Fact]
     public void StartDateBeforeTodayTest()
-        //Test for om den giver fejl når der Startdato er før nuværende dato
     {
         var sut = new Item("testName", "testLocation");
         

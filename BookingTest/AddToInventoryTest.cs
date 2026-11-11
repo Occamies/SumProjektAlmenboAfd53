@@ -5,6 +5,7 @@ namespace BookingTest;
 
 public class AddToInventoryTest
 {
+    // Tjføjer item til inventory Test
     [Fact]
     public void AddToInventorySunshineTest()
     {

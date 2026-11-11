@@ -6,6 +6,7 @@ namespace BookingTest;
 
 public class LastReservationTest
 {
+    // Tjekker at den nyeste resevation er den seneste
     [Fact]
     public void LastReservationSunshineTest()
     {
