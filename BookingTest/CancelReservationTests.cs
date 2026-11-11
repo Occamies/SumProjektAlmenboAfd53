@@ -7,7 +7,7 @@ namespace BookingTest;
 public class CancelReservationTests
 {
     [Fact]
-    public void SunshineTest()
+    public void CancelReservationSunshineTest()
     {
         var item = new Item("testName", "testLocation");
 
