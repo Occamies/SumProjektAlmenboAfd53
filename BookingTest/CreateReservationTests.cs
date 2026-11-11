@@ -4,6 +4,7 @@ namespace BookingTest;
 
 public class CreateReservationTests
 {
+    //SUT = System Under Test
     [Fact]
     public void SunshineTest()
     //Test for det perfekte scenarie hvor reservationen går igennem
@@ -13,13 +14,13 @@ public class CreateReservationTests
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
         var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
-        var reservationCount = sut.Reservations.Count+1;
+        var reservationCount = sut.Reservations.Count;
         
         sut.CreateReservation(startDate, endDate, testPerson);
         var newReservationCount = sut.Reservations.Count;
         
         Assert.Equal(sut.LastReservation().StartDate, startDate );
-        Assert.Equal(reservationCount, newReservationCount);
+        Assert.Equal(reservationCount+1, newReservationCount);
     }
     
     [Fact]
@@ -33,12 +34,11 @@ public class CreateReservationTests
         var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
-        sut.CreateReservation(startDate, endDate, testPerson);
-        var newReservationCount = sut.Reservations.Count;
-        
-        Assert.Throws<ArgumentException>(()=>
+        var exception = Assert.Throws<ArgumentException>(() =>
             sut.CreateReservation(startDate, endDate, testPerson));
-        Assert.Equal(reservationCount, newReservationCount);
+        
+        Assert.Equal("EndDate skal være efter StartDate", exception.Message);
+        Assert.Equal(reservationCount, sut.Reservations.Count);
         
     }
     
@@ -53,16 +53,10 @@ public class CreateReservationTests
         var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
-        sut.CreateReservation(startDate, endDate, testPerson);
-        var newReservationCount = sut.Reservations.Count;
-        
-        //TODO fix assert
-        Assert.Throws<ArgumentException>(()=>
+        var exception = Assert.Throws<ArgumentException>(() =>
             sut.CreateReservation(startDate, endDate, testPerson));
         
-        
-        
-        Assert.Equal(reservationCount, newReservationCount);
-        
+        Assert.Equal("StartDate skal tidligst idag", exception.Message);
+        Assert.Equal(reservationCount, sut.Reservations.Count);
     }
 }
