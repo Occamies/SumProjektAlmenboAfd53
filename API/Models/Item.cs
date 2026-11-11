@@ -1,4 +1,7 @@
-﻿namespace SUM.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace SUM.Model;
 
 public class Item
 {

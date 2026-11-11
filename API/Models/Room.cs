@@ -1,4 +1,6 @@
-﻿namespace SUM.Model;
+﻿using System.Collections.Generic;
+
+namespace SUM.Model;
 
 public class Room : Item
 {

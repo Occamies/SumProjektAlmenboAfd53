@@ -1,4 +1,6 @@
-﻿namespace SUM.Model;
+﻿using System;
+
+namespace SUM.Model;
 
 public class Person
 {
