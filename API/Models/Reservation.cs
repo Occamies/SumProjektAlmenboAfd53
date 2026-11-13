@@ -4,14 +4,14 @@ namespace SUM.Model;
 
 public class Reservation
 {
-    private Guid Id { get; set; }
+    public Guid Id { get; set; }
     public DateTime StartDate { get; set; }
-    private DateTime EndDate { get; set; }
-    private string Code { get; set; }
-    private Item Item  { get; set; }
-    private Contract? Contract { get; set; }
-    private Person Person { get; set; }
-    private bool Cancelled { get; set; }
+    public DateTime EndDate { get; set; }
+    public string Code { get; set; }
+    public Item Item  { get; set; }
+    public Contract? Contract { get; set; }
+    public Person Person { get; set; }
+    public bool Cancelled { get; set; }
 
     internal Reservation(DateTime startDate, DateTime endDate, Item item, Person person)
     {
@@ -25,8 +25,12 @@ public class Reservation
         Cancelled = false;
     }
 
-    public bool CancelReservation(string code)
+    public void CancelReservation(string code)
     {
-        return false;
+        if (code.Equals(Code))
+        {
+            Cancelled = false;
+        }
     }
+    
 }
