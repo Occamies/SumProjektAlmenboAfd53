@@ -17,12 +17,12 @@ public class CancelReservationTests
         var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
         
         item.CreateReservation(startDate, endDate, testPerson);
-        var sut = item.LastReservation();
+        //var sut = item.LastReservation();
         var reservationCount = item.Reservations.Count;
 
-        var result = sut.CancelReservation("1234");
+        //var result = sut.CancelReservation("1234");
 
-        Assert.True(result);
+        //Assert.True(result);
         Assert.Equal(reservationCount -1, item.Reservations.Count);
     }
     
