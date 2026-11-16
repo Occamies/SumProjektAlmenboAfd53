@@ -4,10 +4,10 @@ namespace SUM.Model;
 
 public class Contract
 {
-    private Guid Id { get; set; }
-    private bool SignedByUser  { get; set; }
-    private bool SignedByAdmin { get; set; }
-    private DateOnly Date { get; set; }
+    public Guid Id { get; set; }
+    public bool SignedByUser  { get; set; }
+    public bool SignedByAdmin { get; set; }
+    public DateOnly Date { get; set; }
 
     public Contract(DateOnly date)
     {
@@ -25,5 +25,10 @@ public class Contract
     public void SignAdmin()
     {
         SignedByAdmin = true;
+    }
+    
+    public void Update(DateOnly date)
+    {
+        Date = date;
     }
 }
