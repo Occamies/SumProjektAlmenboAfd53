@@ -28,7 +28,6 @@ public class Item
         var reservation = new Reservation(startDate, endDate, this, person);
         Reservations.Add(reservation);
         return reservation;
-
     }
 
     public void Update(string name, string location)
