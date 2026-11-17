@@ -5,9 +5,9 @@ namespace SUM.Model;
 
 public class Item
 {
-    private Guid Id { get; set; }
-    private string Name { get; set; }
-    private string Location { get; set; }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Location { get; set; }
     public List<Reservation> Reservations { get; set; }
 
     public Item(string name, string location)
@@ -29,5 +29,11 @@ public class Item
         Reservations.Add(reservation);
         return reservation;
 
+    }
+
+    public void Update(string name, string location)
+    {
+        Name = name;
+        Location = location;
     }
 }
