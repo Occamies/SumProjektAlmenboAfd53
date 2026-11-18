@@ -1,0 +1,12 @@
+﻿.my-box {
+    background-color: #dbeafe;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #93c5fd;
+}
+
+.my-title {
+    color: #1e3a8a;
+    font-size: 24px;
+    font-weight: bold;
+}

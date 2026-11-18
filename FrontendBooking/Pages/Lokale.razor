@@ -1,0 +1,45 @@
+﻿@page "/"
+<h1>Lokale</h1>
+
+<RadzenDatePicker @bind-Value="@selectedDate"
+                  DateFormat="dd-MM-yyyy" />
+
+<RadzenScheduler TItem="Booking"
+                 Data="@bookings"
+                 StartProperty="Start"
+                 EndProperty="End"
+                 TextProperty="Title"
+                 Height="600px"
+                 @bind-SelectedDate="@selectedDate"
+                 View="SchedulerView.Month">
+    <RadzenMonthView />
+    <RadzenWeekView />
+    <RadzenDayView />
+</RadzenScheduler>
+
+@code {
+    DateTime selectedDate = DateTime.Today;
+
+    List<Booking> bookings = new()
+    {
+        new Booking
+        {
+            Title = "Eksempelbooking",
+            Start = DateTime.Today.AddDays(2),
+            End = DateTime.Today.AddDays(3)
+        },
+        new Booking
+        {
+            Title = "Anden booking",
+            Start = DateTime.Today.AddDays(5),
+            End = DateTime.Today.AddDays(6)
+        }
+    };
+
+    public class Booking
+    {
+        public string Title { get; set; } = "";
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+    }
+}
