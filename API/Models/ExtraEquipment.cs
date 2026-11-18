@@ -10,4 +10,9 @@ public class ExtraEquipment : Item
         Deposit = deposit;
         Status = DepositState.Outstanding;
     }
+    public ExtraEquipment(string name, string location) : base(name, location)
+    {
+        Deposit = 0.0;
+        Status = DepositState.Outstanding;
+    }
 }

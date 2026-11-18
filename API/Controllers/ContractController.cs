@@ -8,6 +8,7 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ContractController : ControllerBase
 {
+    // TODO: SKAL IKKE LIGGE I RUNTIME!
     private static List<Contract> contracts = [];
 
     [HttpPost]

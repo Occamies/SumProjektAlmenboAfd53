@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 
-// Opsætning af PostgresSQL database i en docker container.
+// Opsætning af PostgresSQL database server i en docker container.
 var postgres = builder.AddPostgres("postgres")
     .WithDataVolume()
     .WithPgAdmin();

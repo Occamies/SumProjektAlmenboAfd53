@@ -7,6 +7,7 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class PersonController : ControllerBase
 {
+    // TODO: SKAL IKKE LIGGE I RUNTIME!
     private static List<Person> people = [];
 
     [HttpPost]
