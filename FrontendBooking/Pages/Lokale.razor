@@ -14,33 +14,117 @@
                  View="SchedulerView.Month"
                  SlotSelect="@OnSlotSelect"
                  AppointmentSelect="@OnAppointmentSelect">
-    
+
     <RadzenMonthView/>
     <RadzenWeekView/>
     <RadzenDayView/>
 </RadzenScheduler>
 
+<RadzenNumeric @bind-Value="@numberOfDaysBooked"
+               Min="1"
+               Max="7"
+               Placeholder="Antal døgn" />
+
+
+@if (selectedBooking != null)
+{
+    <div class="booking-info">
+        <h3>Bookingoplysninger</h3>
+        <p><b>Navn:</b> @selectedBooking.Title</p>
+        <p><b>Start:</b> @selectedBooking.Start.ToString("dd-MM-yyyy HH:mm")</p>
+        <p><b>Slut:</b> @selectedBooking.End.ToString("dd-MM-yyyy HH:mm")</p>
+
+        <RadzenButton Text="Luk"
+                      Click="@(() => selectedBooking = null)" />
+    </div>
+}
+
+@if (showBookingForm)
+{
+    <div class="booking-info">
+        <h3>Ny testbooking</h3>
+
+        <p>Valgt dato: @selectedBookingDate.ToString("dd-MM-yyyy")</p>
+
+        <RadzenTextBox @bind-Value="@newBookingTitle"
+                       Placeholder="Bookingens navn"
+                       Style="width: 100%" />
+
+        <RadzenButton Text="Opret booking"
+                      Click="@CreateBooking"
+                      Style="margin-top: 10px" />
+    </div>
+}
+
 @code {
-    
-    
-    
     DateTime selectedDate = DateTime.Today;
+    DateTime selectedBookingDate;
+
+    int numberOfDaysBooked = 1;
+
+    bool showBookingForm = false;
+
+    string newBookingTitle = "";
+
+    Booking? selectedBooking;
 
     List<Booking> bookings = new()
     {
         new Booking
         {
             Title = "Eksempelbooking",
-            Start = DateTime.Today.AddDays(2),
-            End = DateTime.Today.AddDays(3)
+            Start = DateTime.Today.AddDays(2).Date,
+            End = DateTime.Today.AddDays(3).Date
         },
         new Booking
         {
             Title = "Anden booking",
-            Start = DateTime.Today.AddDays(5),
-            End = DateTime.Today.AddDays(6)
+            Start = DateTime.Today.AddDays(5).Date,
+            End = DateTime.Today.AddDays(6).Date
+        },
+        new Booking
+        {
+            Title = "Weekendbooking",
+            Start = DateTime.Today.AddDays(8).Date,
+            End = DateTime.Today.AddDays(10).Date
         }
     };
+
+    public void OnSlotSelect(SchedulerSlotSelectEventArgs args)
+    {
+        selectedBookingDate = args.Start.Date;
+        selectedDate = args.Start.Date;
+        showBookingForm = true;
+        selectedBooking = null;
+    }
+
+    public void OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Booking> args)
+    {
+        selectedBooking = args.Data;
+        showBookingForm = false;
+    }
+
+    public void CreateBooking()
+    {
+        if (string.IsNullOrWhiteSpace(newBookingTitle))
+            return;
+
+        
+            bookings.Add(new Booking
+            {
+                Title = newBookingTitle,
+                Start = selectedBookingDate.Date.AddHours(12),
+                End = selectedBookingDate.Date.AddDays(numberOfDaysBooked).AddHours(11)
+            });
+        
+        
+ 
+
+        bookings = bookings.ToList();
+        showBookingForm = false;
+        newBookingTitle = "";
+        numberOfDaysBooked = 1;
+    }
 
     public class Booking
     {
