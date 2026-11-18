@@ -1,0 +1,92 @@
+﻿
+@using Radzen
+@using Radzen.Blazor
+@inject DialogService DialogService
+
+<div class="equipment-dialog">
+
+    <div class="equipment-header">
+        <span>Items</span>
+        <span>Antal</span>
+        <span>Desc</span>
+    </div>
+
+    @foreach (var item in equipmentItems)
+    {
+        <div class="equipment-row">
+            <span>@item.Name</span>
+
+            <RadzenNumeric @bind-Value="item.Count"
+                           Min="0"
+                           Style="width: 65px" />
+
+            <RadzenTextBox @bind-Value="item.Description"
+                           Placeholder="Beskrivelse"
+                           Style="width: 100%" />
+        </div>
+    }
+
+    <div class="equipment-buttons">
+        <RadzenButton Text="Cancel"
+                      ButtonStyle="ButtonStyle.Light"
+                      Click="@Cancel" />
+
+        <RadzenButton Text="Add"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Click="@AddEquipment" />
+    </div>
+
+</div>
+
+<style>
+    .equipment-dialog {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        padding: 10px;
+    }
+
+    .equipment-header,
+    .equipment-row {
+        display: grid;
+        grid-template-columns: 1fr 90px 1fr;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .equipment-header {
+        font-weight: bold;
+    }
+
+    .equipment-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 100px;
+    }
+</style>
+
+@code {
+    private List<EquipmentItem> equipmentItems = new()
+    {
+        new EquipmentItem { Name = "Bord" },
+        new EquipmentItem { Name = "Stol" },
+        new EquipmentItem { Name = "Grill" }
+    };
+
+    private void Cancel()
+    {
+        DialogService.Close();
+    }
+
+    private void AddEquipment()
+    {
+        DialogService.Close(equipmentItems);
+    }
+
+    public class EquipmentItem
+    {
+        public string Name { get; set; } = "";
+        public int Count { get; set; }
+        public string Description { get; set; } = "";
+    }
+}

@@ -1,4 +1,10 @@
-﻿@page "/"
+﻿
+@page "/"
+@using FrontendBooking.Components
+@using Radzen
+@using Radzen.Blazor
+@inject DialogService DialogService
+
 <h1>Lokale</h1>
 
 <RadzenDatePicker @bind-Value="@selectedDate"
@@ -15,117 +21,89 @@
                  SlotSelect="@OnSlotSelect"
                  AppointmentSelect="@OnAppointmentSelect">
 
-    <RadzenMonthView/>
-    <RadzenWeekView/>
-    <RadzenDayView/>
+    <RadzenMonthView />
+    <RadzenWeekView />
+    <RadzenDayView />
+
 </RadzenScheduler>
 
-<RadzenNumeric @bind-Value="@numberOfDaysBooked"
-               Min="1"
-               Max="7"
-               Placeholder="Antal døgn" />
-
-
-@if (selectedBooking != null)
-{
-    <div class="booking-info">
-        <h3>Bookingoplysninger</h3>
-        <p><b>Navn:</b> @selectedBooking.Title</p>
-        <p><b>Start:</b> @selectedBooking.Start.ToString("dd-MM-yyyy HH:mm")</p>
-        <p><b>Slut:</b> @selectedBooking.End.ToString("dd-MM-yyyy HH:mm")</p>
-
-        <RadzenButton Text="Luk"
-                      Click="@(() => selectedBooking = null)" />
-    </div>
-}
-
-@if (showBookingForm)
-{
-    <div class="booking-info">
-        <h3>Ny testbooking</h3>
-
-        <p>Valgt dato: @selectedBookingDate.ToString("dd-MM-yyyy")</p>
-
-        <RadzenTextBox @bind-Value="@newBookingTitle"
-                       Placeholder="Bookingens navn"
-                       Style="width: 100%" />
-
-        <RadzenButton Text="Opret booking"
-                      Click="@CreateBooking"
-                      Style="margin-top: 10px" />
-    </div>
-}
-
 @code {
+
     DateTime selectedDate = DateTime.Today;
-    DateTime selectedBookingDate;
-
-    int numberOfDaysBooked = 1;
-
-    bool showBookingForm = false;
-
-    string newBookingTitle = "";
 
     Booking? selectedBooking;
 
+    // Eksempelbookinger i kalenderen
     List<Booking> bookings = new()
     {
         new Booking
         {
             Title = "Eksempelbooking",
-            Start = DateTime.Today.AddDays(2).Date,
-            End = DateTime.Today.AddDays(3).Date
+            Start = DateTime.Today.AddDays(2).Date.AddHours(12),
+            End = DateTime.Today.AddDays(3).Date.AddHours(11)
         },
+
         new Booking
         {
             Title = "Anden booking",
-            Start = DateTime.Today.AddDays(5).Date,
-            End = DateTime.Today.AddDays(6).Date
+            Start = DateTime.Today.AddDays(5).Date.AddHours(12),
+            End = DateTime.Today.AddDays(6).Date.AddHours(11)
         },
+
         new Booking
         {
             Title = "Weekendbooking",
-            Start = DateTime.Today.AddDays(8).Date,
-            End = DateTime.Today.AddDays(10).Date
+            Start = DateTime.Today.AddDays(8).Date.AddHours(12),
+            End = DateTime.Today.AddDays(10).Date.AddHours(11)
         }
     };
 
-    public void OnSlotSelect(SchedulerSlotSelectEventArgs args)
+    // Når brugeren vælger en dato i kalenderen
+    public async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
     {
-        selectedBookingDate = args.Start.Date;
-        selectedDate = args.Start.Date;
-        showBookingForm = true;
-        selectedBooking = null;
+        await OpenBookingDialog(args.Start.Date);
     }
 
-    public void OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Booking> args)
+    // Når brugeren klikker på en eksisterende booking
+    public void OnAppointmentSelect(
+        SchedulerAppointmentSelectEventArgs<Booking> args)
     {
         selectedBooking = args.Data;
-        showBookingForm = false;
     }
 
-    public void CreateBooking()
+    // Åbner bookingdialogen
+    public async Task OpenBookingDialog(DateTime date)
     {
-        if (string.IsNullOrWhiteSpace(newBookingTitle))
-            return;
+        var result = await DialogService.OpenAsync<BookingDialog>(
+            "Book fællesrum",
+            new Dictionary<string, object>
+            {
+                { "StartDate", date }
+            },
+            new DialogOptions
+            {
+                Width = "min(90vw, 600px)",
+                CloseDialogOnOverlayClick = false
+            }
+        );
 
-        
+        // Modtag bookingoplysninger fra BookingDialog
+        if (result is BookingDialog.BookingData bookingData)
+        {
+            // Opret booking i kalenderen
             bookings.Add(new Booking
             {
-                Title = newBookingTitle,
-                Start = selectedBookingDate.Date.AddHours(12),
-                End = selectedBookingDate.Date.AddDays(numberOfDaysBooked).AddHours(11)
+                Title = bookingData.Title,
+                Start = bookingData.Start,
+                End = bookingData.End
             });
-        
-        
- 
 
-        bookings = bookings.ToList();
-        showBookingForm = false;
-        newBookingTitle = "";
-        numberOfDaysBooked = 1;
+            // Opdater kalenderens dataliste
+            bookings = bookings.ToList();
+        }
     }
 
+    // Bookingmodel til kalenderen
     public class Booking
     {
         public string Title { get; set; } = "";

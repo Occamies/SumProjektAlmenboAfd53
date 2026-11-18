@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@using Radzen
+@using Radzen.Blazor
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -12,5 +14,7 @@
         <article class="content px-4">
             @Body
         </article>
+        
+        <RadzenDialog/>
     </main>
 </div>
