@@ -11,13 +11,19 @@
                  TextProperty="Title"
                  Height="600px"
                  @bind-SelectedDate="@selectedDate"
-                 View="SchedulerView.Month">
-    <RadzenMonthView />
-    <RadzenWeekView />
-    <RadzenDayView />
+                 View="SchedulerView.Month"
+                 SlotSelect="@OnSlotSelect"
+                 AppointmentSelect="@OnAppointmentSelect">
+    
+    <RadzenMonthView/>
+    <RadzenWeekView/>
+    <RadzenDayView/>
 </RadzenScheduler>
 
 @code {
+    
+    
+    
     DateTime selectedDate = DateTime.Today;
 
     List<Booking> bookings = new()
