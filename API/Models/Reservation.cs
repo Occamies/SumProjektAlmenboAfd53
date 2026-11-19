@@ -4,14 +4,14 @@ namespace SUM.Model;
 
 public class Reservation
 {
-    private Guid Id { get; set; }
+    public Guid Id { get; set; }
     public DateTime StartDate { get; set; }
-    private DateTime EndDate { get; set; }
+    public DateTime EndDate { get; set; }
     private string Code { get; set; }
     private Item Item  { get; set; }
     private Contract? Contract { get; set; }
     private Person Person { get; set; }
-    private bool Cancelled { get; set; }
+    public bool Cancelled { get; set; }
 
     internal Reservation(DateTime startDate, DateTime endDate, Item item, Person person)
     {
@@ -27,6 +27,12 @@ public class Reservation
 
     public bool CancelReservation(string code)
     {
-        return false;
+        if (code == this.Code)
+        {
+            this.Cancelled = true;
+            Item.Reservations.Remove(this);
+            return true;
+        }
+        throw new ArgumentException("Forkert kodeord");
     }
 }
