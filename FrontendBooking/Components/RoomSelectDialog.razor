@@ -1,0 +1,5 @@
+﻿@inject DialogService DialogService
+
+<p>Vælg det fællesrum, du vil booke. Du kan altid skifte senere under "Change Building" i menuen.</p>
+
+<RoomPicker OnRoomSelected="@(_ => DialogService.Close())" />
