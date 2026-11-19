@@ -8,6 +8,7 @@
     <div class="equipment-header">
         <span>Items</span>
         <span>Antal</span>
+        <span>Depositum</span>
         <span>Desc</span>
     </div>
 
@@ -18,11 +19,12 @@
 
             <RadzenNumeric @bind-Value="item.Count"
                            Min="0"
+                           Max=@item.Amount
                            Style="width: 65px" />
+            <p>@item.Depositum kr</p>
 
-            <RadzenTextBox @bind-Value="item.Description"
-                           Placeholder="Beskrivelse"
-                           Style="width: 100%" />
+            <p>@item.Description</p>
+            
         </div>
     }
 
@@ -39,38 +41,15 @@
 </div>
 
 <style>
-    .equipment-dialog {
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-        padding: 10px;
-    }
-
-    .equipment-header,
-    .equipment-row {
-        display: grid;
-        grid-template-columns: 1fr 90px 1fr;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .equipment-header {
-        font-weight: bold;
-    }
-
-    .equipment-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 100px;
-    }
+ 
 </style>
 
 @code {
     private List<EquipmentItem> equipmentItems = new()
     {
-        new EquipmentItem { Name = "Bord" },
-        new EquipmentItem { Name = "Stol" },
-        new EquipmentItem { Name = "Grill" }
+        new EquipmentItem { Name = "Bord", Description = "Firkantet bord", Amount= 2, Depositum = 0},
+        new EquipmentItem { Name = "Stol", Description = "Plastik", Amount = 12, Depositum = 0},
+        new EquipmentItem { Name = "Grill", Description = "El-Grill Depositum", Amount = 1, Depositum = 500}
     };
 
     private void Cancel()
@@ -88,5 +67,7 @@
         public string Name { get; set; } = "";
         public int Count { get; set; }
         public string Description { get; set; } = "";
+        public int Amount { get; set; } = 0;
+        public int Depositum { get; set; } = 0;
     }
 }

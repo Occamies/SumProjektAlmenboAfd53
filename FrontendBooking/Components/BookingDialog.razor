@@ -35,10 +35,16 @@
         {
             <div>
                 <b>Valgt ekstra equipment:</b>
-
                 @foreach (var item in selectedEquipment.Where(x => x.Count > 0))
                 {
+                <RadzenStack Orientation="Orientation.Horizontal">
                     <p>@item.Name: @item.Count stk.</p>
+                    
+                    @if (item.Depositum > 0)
+                    {
+                        <p>Depositum: @(item.Depositum * item.Count) kr.</p>
+                    }
+                </RadzenStack>
                 }
             </div>
         }

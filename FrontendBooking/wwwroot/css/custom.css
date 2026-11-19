@@ -10,3 +10,37 @@
     font-size: 24px;
     font-weight: bold;
 }
+
+.equipment-dialog {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.equipment-header,
+.equipment-row {
+    display: grid;
+    border-radius: 5px;
+    grid-template-columns: minmax(0, 1fr) 100px 120px minmax(0, 1.5fr);
+    align-items: center;
+    min-height: 65px;
+    padding: 8px;
+}
+
+.equipment-row p {
+    margin: 0
+}
+
+.equipment-header {
+    font-weight: bold;
+}
+
+.equipment-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 100px;
+}
+
+.equipment-row:nth-child(even) {
+    background-color: #f2f2f2;
+}
