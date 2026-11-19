@@ -1,6 +1,11 @@
 ﻿@inherits LayoutComponentBase
 @using Radzen
 @using Radzen.Blazor
+@using FrontendBooking.Components
+@using FrontendBooking.Services
+@inject DialogService DialogService
+@inject SelectedRoomService RoomState
+
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -18,3 +23,19 @@
         <RadzenDialog/>
     </main>
 </div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !RoomState.HasRoom)
+        {
+            await DialogService.OpenAsync<RoomSelectDialog>("Vælg fællesrum",
+                options: new DialogOptions
+                {
+                    ShowClose = false,
+                    CloseDialogOnOverlayClick = false,
+                    CloseDialogOnEsc = false
+                });
+        }
+    }
+}
