@@ -7,7 +7,7 @@ namespace API.Models;
 [PrimaryKey(nameof(Id))]
 public class Reservation
 {
-    private Guid Id { get; set; }
+    public Guid Id { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     private string Code { get; set; }
@@ -48,6 +48,12 @@ public class Reservation
 
     public bool CancelReservation(string code)
     {
-        return false;
+        if (code == this.Code)
+        {
+            this.Cancelled = true;
+            Item.Reservations.Remove(this);
+            return true;
+        }
+        throw new ArgumentException("Forkert kodeord");
     }
 }

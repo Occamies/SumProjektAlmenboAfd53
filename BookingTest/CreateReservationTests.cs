@@ -61,4 +61,23 @@ public class CreateReservationTests
         Assert.Equal("StartDate skal tidligst idag", exception.Message);
         Assert.Equal(reservationCount, sut.Reservations.Count);
     }
+    
+    //Test for at sikre der ikke kan opstå dobbelt booking
+    [Fact]
+    public void DobbeltBookingQuestionMarkQuestionMarkQuestionMarkQuestionMarkTest()
+    {
+        var sut = new Item("testName", "testLocation");
+        
+        var startDate = DateTime.Now;
+        var endDate = startDate.AddDays(1);
+        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson2 = new Person("Lasse", "LasseHarEnMail@hotmail.dk", "Hjemme hos Lasse Gade", "4206942069");
+        
+        sut.CreateReservation(startDate, endDate, testPerson);
+        
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            sut.CreateReservation(startDate, endDate, testPerson2));
+        
+        Assert.Equal("Reservation is not available", exception.Message);
+    }
 }
