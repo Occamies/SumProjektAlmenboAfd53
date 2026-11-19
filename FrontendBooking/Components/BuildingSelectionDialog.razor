@@ -1,0 +1,48 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@inject DialogService DialogService
+
+<h3>ChooseBuilding</h3>
+
+<RadzenStack Gap="15px" AlignItems="AlignItems.Center">
+    <RadzenText Text="Welcome"
+                TextStyle="TextStyle.H1"/>
+    
+    <RadzenText Text="Choose your building" 
+                TextAlign="TextAlign.Center"/>
+    
+    <RadzenStack Gap="10px" Style="width: 100%">
+        @foreach (var building in buildings)
+        {
+            <RadzenButton Text="@building.Name"
+                          Icon="apartment"
+                          ButtonStyle="ButtonStyle.Light"
+                          Variant="Variant.Outlined"
+                          ButtonType="ButtonType.Button"
+                          Click="@(() => SelectBuilding(building))"
+                          Style="width: 100%" />
+        }
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+
+    private List<BuildingOption> buildings = new()
+    {
+        new BuildingOption { Id = 1, Name = "Bygning A" },
+        new BuildingOption { Id = 2, Name = "Bygning B" },
+        new BuildingOption { Id = 3, Name = "Bygning C" },
+        new BuildingOption { Id = 4, Name = "Bygning D" }
+    };
+
+    private void SelectBuilding(BuildingOption building)
+    {
+        DialogService.Close(building);
+    }
+    
+    public class BuildingOption
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+    }
+}

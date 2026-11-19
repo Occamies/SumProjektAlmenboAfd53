@@ -4,25 +4,40 @@
 @using Radzen
 @using Radzen.Blazor
 @inject DialogService DialogService
+@using Microsoft.AspNetCore.Components
 
 <h1>Lokale</h1>
 
-<RadzenScheduler TItem="Booking"
-                 Data="@bookings"
-                 StartProperty="Start"
-                 EndProperty="End"
-                 TextProperty="Title"
-                 Height="600px"
-                 @bind-SelectedDate="@selectedDate"
-                 View="SchedulerView.Month"
-                 SlotSelect="@OnSlotSelect"
-                 AppointmentSelect="@OnAppointmentSelect">
+@if (selectedBuildingId == null)
+{
+    <p>Vælg venligst en bygning for at se kalenderen.</p>
+}
+else
+{
+    <RadzenScheduler TItem="Booking"
+                     Data="@bookings"
+                     StartProperty="Start"
+                     EndProperty="End"
+                     TextProperty="Title"
+                     Height="600px"
+                     @bind-SelectedDate="@selectedDate"
+                     View="SchedulerView.Month"
+                     SlotSelect="@OnSlotSelect"
+                     AppointmentSelect="@OnAppointmentSelect">
 
-    <RadzenMonthView />
-    <RadzenWeekView />
-    <RadzenDayView />
+        <RadzenMonthView />
+        <RadzenWeekView />
+        <RadzenDayView />
 
-</RadzenScheduler>
+    </RadzenScheduler>
+}
+@if (selectedBuildingId != null)
+{
+    <RadzenButton Text="Skift bygning"
+                  Icon="apartment"
+                  ButtonStyle="ButtonStyle.Secondary"
+                  Click="@OpenBuildingDialog" />
+}
 
 @code {
 
@@ -126,5 +141,39 @@
         public string Title { get; set; } = "";
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+    }
+    
+    
+    //modal vindue til tjek af bygning
+    private int? selectedBuildingId;
+
+    private bool buildingDialogOpened;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !buildingDialogOpened)
+        {
+            buildingDialogOpened = true;
+            await OpenBuildingDialog();
+            StateHasChanged();
+        }
+    }
+
+    private async Task OpenBuildingDialog()
+    {
+        var result = await DialogService.OpenAsync<BuildingSelectionDialog>(
+            "Vælg bygning",
+            null,
+            new DialogOptions
+            {
+                Width = "min(450px, 90vw)",
+                ShowClose = false,
+                CloseDialogOnOverlayClick = false
+            });
+
+        if (result is BuildingSelectionDialog.BuildingOption building)
+        {
+            selectedBuildingId = building.Id;
+        }
     }
 }
