@@ -1,12 +1,106 @@
-﻿@base_url = http://localhost:5108
-POST {{base_url}}/api/item
+﻿### Hent alle personer fra PostgreSQL
+GET https://localhost:7011/api/person
+Accept: application/json
+
+### Opret person i PostgreSQL
+POST https://localhost:7011/api/person
 Content-Type: application/json
 
 {
-    "name": "Test1",
-    "location": "Skyen"
+  "name": "Test Person",
+  "email": "test@example.com",
+  "address": "Testvej 10",
+  "phone": "12345678"
 }
-###
 
-GET {{base_url}}/api/item
-accept: application/json
+### Hent en bestemt person fra PostgreSQL
+GET https://localhost:7011/api/person/01994c90-0423-4dab-aaaf-f0f3900c6eb2
+Accept: application/json
+
+### Opdater eksisterende person
+PUT https://localhost:7011/api/person/01994c90-0423-4dab-aaaf-f0f3900c6eb2
+Content-Type: application/json
+
+{
+  "id": "3c2ac0ac-9f8c-4aea-948b-27f97b2d91e1",
+  "name": "Opdateret Test Person",
+  "email": "opdateret@example.com",
+  "address": "Ny Testvej 20",
+  "phone": "87654321"
+}
+
+### Hent den opdaterede person
+GET https://localhost:7011/api/person/01994c90-0423-4dab-aaaf-f0f3900c6eb2
+Accept: application/json
+
+### Slet en person fra PostgreSQL
+DELETE https://localhost:7011/api/person/01994c90-0423-4dab-aaaf-f0f3900c6eb2
+
+### Kontrollér at personen er slettet
+GET https://localhost:7011/api/person/01994c90-0423-4dab-aaaf-f0f3900c6eb2
+Accept: application/json
+
+### Hent alle lokaler fra PostgreSQL
+GET https://localhost:7011/api/room
+Accept: application/json
+
+### Opret et lokale
+POST https://localhost:7011/api/room
+Content-Type: application/json
+
+{
+  "name": "Fælleslokale",
+  "location": "Stueetagen"
+}
+
+### Hent et bestemt lokale ud fra ID
+GET https://localhost:7011/api/room/39ee0117-ca11-48b8-b038-25ee78d0a89b
+Accept: application/json
+
+### Opdater et eksisterende lokale
+PUT https://localhost:7011/api/room/39ee0117-ca11-48b8-b038-25ee78d0a89b
+Content-Type: application/json
+
+{
+  "name": "Stort fælleslokale",
+  "location": "1. sal"
+}
+
+### Slet et lokale
+DELETE https://localhost:7011/api/room/39ee0117-ca11-48b8-b038-25ee78d0a89b
+
+### 1. Hent alt ekstraudstyr
+GET https://localhost:7011/api/extraequipment
+Accept: application/json
+
+
+### 2. Opret ekstraudstyr
+POST https://localhost:7011/api/extraequipment
+Content-Type: application/json
+
+{
+  "name": "Projektor",
+  "location": "Depot"
+}
+
+
+### 3. Hent ekstraudstyr via ID
+# Erstat GUID med ID fra POST-svaret
+GET https://localhost:7011/api/extraequipment/63a59ffd-a444-4e3f-a27d-80a07f88c371
+Accept: application/json
+
+
+### 4. Opdater ekstraudstyr
+# Erstat GUID med ID fra POST-svaret
+PUT https://localhost:7011/api/extraequipment/63a59ffd-a444-4e3f-a27d-80a07f88c371
+Content-Type: application/json
+
+{
+  "name": "4K Projektor",
+  "location": "Fælleslokale"
+}
+
+
+### 5. Slet ekstraudstyr
+# Erstat GUID med ID fra POST-svaret
+DELETE https://localhost:7011/api/extraequipment/63a59ffd-a444-4e3f-a27d-80a07f88c371
