@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace SUM.Model;
+namespace API.Models;
 
 [PrimaryKey(nameof(Id))]
 public class Reservation

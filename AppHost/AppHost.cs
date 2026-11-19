@@ -7,11 +7,17 @@ var postgres = builder.AddPostgres("postgres")
     .WithPgAdmin();
 
 // Database
-var db = postgres.AddDatabase("database");
+var db = postgres.AddDatabase("postgresDB");
+
+var migrations = builder.AddProject<Projects.MigrationWorker>("migrations")
+    .WithReference(db)
+    .WaitFor(db);
 
 // API med db reference.
 var api = builder.AddProject<Projects.API>("api")
-    .WithReference(db);
+    .WithReference(db)
+    .WithReference(migrations)
+    .WaitForCompletion(migrations);
 
 // Blazor frontend
 builder.AddProject<Projects.BlazorFrontend>("frontend")

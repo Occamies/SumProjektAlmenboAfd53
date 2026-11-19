@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SUM.Model;
+namespace API.Models;
 
 public class Person
 {

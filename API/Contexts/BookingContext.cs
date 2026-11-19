@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SUM.Model;
+using API.Models;
 
-namespace API;
+namespace API.Contexts;
 
 public class BookingContext : DbContext
 {

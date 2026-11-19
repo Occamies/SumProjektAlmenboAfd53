@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SUM.Model;
+namespace API.Models;
 
 public class Item
 {

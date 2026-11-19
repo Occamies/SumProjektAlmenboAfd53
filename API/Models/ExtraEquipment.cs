@@ -1,4 +1,4 @@
-﻿namespace SUM.Model;
+﻿namespace API.Models;
 
 public class ExtraEquipment : Item
 {

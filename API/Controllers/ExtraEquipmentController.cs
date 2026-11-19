@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SUM.Model;
+using API.Models;
 using API.DTOs;
+using API.Contexts;
 
 namespace API.Controllers;
 

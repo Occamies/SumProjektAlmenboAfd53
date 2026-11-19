@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SUM.Model;
+using API.Models;
+using API.DTOs;
+using API.Contexts;
 
 namespace API.Controllers;
 
@@ -62,7 +64,7 @@ public class ItemController : ControllerBase
         }
         
         item.Update(updatedItem.Name, updatedItem.Location);
-        //await _BookingContext.SaveChangesAsync();
+        await _BookingContext.SaveChangesAsync();
 
         return NoContent();
     }

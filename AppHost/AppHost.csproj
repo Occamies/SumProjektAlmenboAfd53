@@ -12,6 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\API\API.csproj" />
       <ProjectReference Include="..\BlazorFrontend\BlazorFrontend.csproj" />
+      <ProjectReference Include="..\MigrationWorker\MigrationWorker.csproj" />
     </ItemGroup>
 
     <ItemGroup>
