@@ -1,90 +1,109 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using API.Models;
-using API.DTOs;
+﻿
 using API.Contexts;
+using API.DTOs.Item;
+using API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class ItemController : ControllerBase
 {
-    // TODO: SKAL IKKE LIGGE I RUNTIME!
-    private static List<Item> items = [];
+    private readonly BookingContext _context;
     
-    private readonly BookingContext _BookingContext;
-    public ItemController(BookingContext bookingContext)
+    public ItemController(BookingContext context)
     {
-        _BookingContext = bookingContext;
+        _context = context;
     }
     
-    // TODO:
-    // GetRooms
-    // PostCreateBooking
-    
-    [HttpPost] 
-    public async Task<IActionResult> CreateItem(Item item)
-    {
-        items.Add(item);
-        //_BookingContext.Items.Add(item);
-        //await _BookingContext.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetByItemsId), new {id = item.Id}, item);
-    }
-    
+    // Hent alle 
     [HttpGet]
-    public IActionResult GetAllItems()
+    public async Task<ActionResult<List<ItemDto>>> GetAll()
     {
-        //return Ok(_BookingContext.Items.ToList());
+        var items = await _context.Items
+            .Select(item => new ItemDto
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Location = item.Location
+            })
+            .ToListAsync();
+
         return Ok(items);
     }
-
-    [HttpGet("{Id:guid}")]
-    public IActionResult GetByItemsId(Guid id)
+    
+    // Hent et Item ud fra dets Id.
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ItemDto>> GetById(Guid id)
     {
-        //var item = _BookingContext.Items.FirstOrDefault(i => i.Id == id);
-        var item = items.FirstOrDefault(i => i.Id == id);
+        var item = await _context.Items.FindAsync(id);
 
         if (item == null)
-        {
             return NotFound();
-        }
-        return Ok(item);
+
+        return Ok(new ItemDto
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Location = item.Location
+        });
     }
 
-    [HttpPut("{Id:guid}")]
-    public async Task<IActionResult> UpdateItem(Guid id, Item updatedItem)
+
+    // Create
+    [HttpPost]
+    public async Task<ActionResult<ItemDto>> Create(
+        CreateItemDto dto)
     {
-        var item = _BookingContext.Items.FirstOrDefault(i => i.Id == id);
-        //var item = items.FirstOrDefault(i => i.Id == id);
+        var item = new Item(dto.Name, dto.Location);
+
+        _context.Items.Add(item);
+        await _context.SaveChangesAsync();
+
+        var result = new ItemDto
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Location = item.Location
+        };
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = item.Id },
+            result);
+    }
+    
+    // Opdaterer 
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Update(
+        Guid id, UpdateItemDto dto)
+    {
+        var item = await _context.Items.FindAsync(id);
 
         if (item == null)
-        {
             return NotFound();
-        }
         
-        item.Update(updatedItem.Name, updatedItem.Location);
-        await _BookingContext.SaveChangesAsync();
+        item.Update(dto.Name, dto.Location);
+
+        await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
-    [HttpDelete("{Id:guid}")]
-    public async Task<IActionResult> DeleteItem(Guid id)
+    // Delete
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        //var item = _BookingContext.Items.FirstOrDefault(i => i.Id == id);
-        var item = items.FirstOrDefault(i => i.Id == id);
+        var item = await _context.Items.FindAsync(id);
+
         if (item == null)
-        {
             return NotFound();
-        }
-        
-        //_BookingContext.Items.Remove(item);
-        items.Remove(item);
-        
-        //await _BookingContext.SaveChangesAsync();
+
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
-
-
 }

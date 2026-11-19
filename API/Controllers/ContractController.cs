@@ -1,69 +1,96 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using API.Models;
 using API.DTOs;
 using API.Contexts;
 
 namespace API.Controllers;
 
-
 [ApiController]
 [Route("api/[controller]")]
 public class ContractController : ControllerBase
 {
-    // TODO: SKAL IKKE LIGGE I RUNTIME!
-    private static List<Contract> contracts = [];
-
-    [HttpPost]
-    public IActionResult CreateContract(Contract contract)
+    private readonly BookingContext _context;
+    
+    public ContractController(BookingContext context)
     {
-        contracts.Add(contract);
-
-        return CreatedAtAction(nameof(GetByContractId), new { id = contract.Id }, contract);
+        _context = context;
     }
-
+    
+    // Hent all
     [HttpGet]
-    public IActionResult GetAllContracts()
+    public async Task<IActionResult> GetAllContracts()
     {
+        var contracts = await _context.Contracts
+            .Select(c => new ContractDto
+            {
+                Id = c.Id,
+                Date = c.Date,
+                SignedByUser = c.SignedByUser,
+                SignedByAdmin = c.SignedByAdmin
+            })
+            .ToListAsync();
+
         return Ok(contracts);
     }
 
-    [HttpGet("{Id}")]
-    public IActionResult GetByContractId(Guid id)
+    // Hent ud fra Id
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetContractById(Guid id)
     {
-        var contract = contracts.FirstOrDefault(i => i.Id == id);
-        
+        var contract = await _context.Contracts.FindAsync(id);
+
         if (contract == null)
-        {
             return NotFound();
-        }
-        return Ok(contract);
+
+        return Ok(new ContractDto
+        {
+            Id = contract.Id,
+            Date = contract.Date,
+            SignedByUser = contract.SignedByUser,
+            SignedByAdmin = contract.SignedByAdmin
+        });
     }
 
-    [HttpPut("{Id}")]
-    public IActionResult UpdateContract(Guid id, Contract updatedContract)
+    // OPret
+    [HttpPost]
+    public async Task<IActionResult> CreateContract(
+        CreateContractDto dto)
     {
-        var contract = contracts.FirstOrDefault(i => i.Id == id);
+        var contract = new Contract(dto.Date);
 
-        if (contract == null)
-        {
-            return NotFound();
-        }
+        _context.Contracts.Add(contract);
+        await _context.SaveChangesAsync();
 
-        contract.Update(updatedContract.Date);
-
-        return NoContent();
+        return CreatedAtAction(
+            nameof(GetContractById),
+            new { id = contract.Id },
+            new ContractDto
+            {
+                Id = contract.Id,
+                Date = contract.Date,
+                SignedByUser = contract.SignedByUser,
+                SignedByAdmin = contract.SignedByAdmin
+            });
     }
 
-    [HttpDelete("{Id}")]
-    public IActionResult DeleteContract(Guid id)
+    // OPdater
+    // hvad er vores overjelser om at opdatere en booking? er det noget vi tilader?
+    // hvis ja skal logikken så være her eller på item?
+    
+    // Delete
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteContract(Guid id)
     {
-        var contract = contracts.FirstOrDefault(i => i.Id == id);
-        if (contract == null)
-        {
-            return NotFound();
-        }
+        var contract = await _context.Contracts.FindAsync(id);
 
-        contracts.Remove(contract);
+        if (contract == null)
+            return NotFound();
+
+        _context.Contracts.Remove(contract);
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 }
