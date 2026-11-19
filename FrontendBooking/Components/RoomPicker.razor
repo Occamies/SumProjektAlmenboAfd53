@@ -1,0 +1,31 @@
+﻿@using FrontendBooking.Services
+@inject SelectedRoomService RoomState
+
+<div class="room-grid">
+    @foreach (var room in RoomState.Rooms)
+    {
+        <RadzenButton Text="@room"
+                      ButtonStyle="@(room == RoomState.SelectedRoom ? ButtonStyle.Primary : ButtonStyle.Light)"
+                      Click="@(() => Select(room))"
+                      Style="height: 80px; font-size: 1.1em" />
+    }
+</div>
+
+<style>
+    .room-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+</style>
+
+@code {
+    [Parameter] public EventCallback<string> OnRoomSelected { get; set; }
+
+    private async Task Select(string room)
+    {
+        RoomState.SelectRoom(room);
+        await OnRoomSelected.InvokeAsync(room);
+    }
+}

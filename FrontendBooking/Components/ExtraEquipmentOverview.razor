@@ -1,0 +1,36 @@
+﻿<RadzenStack Orientation="Orientation.Horizontal" Gap="40px">
+
+    <!-- Menu 1: Depotrum -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H5" Style="margin-bottom: 15px">Depotrum</RadzenText>
+
+        <RadzenDataGrid Data="@storageItems" TItem="StorageItem">
+            <Columns>
+                <RadzenDataGridColumn TItem="StorageItem" Property="Name" Title="Udstyr" />
+                <RadzenDataGridColumn TItem="StorageItem" Property="Count" Title="Antal" />
+                <RadzenDataGridColumn TItem="StorageItem" Property="Deposit" Title="Depositum">
+                    <Template Context="item">@item.Deposit kr.</Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenCard>
+
+</RadzenStack>
+
+@code {
+    private List<StorageItem> storageItems = new()
+    {
+        new() { Name = "Gasgrill",             Count = 1,  Deposit = 500 },
+        new() { Name = "Kulgrill",             Count = 1,  Deposit = 200 },
+        new() { Name = "Projektor med lærred", Count = 1,  Deposit = 200 },
+        new() { Name = "Borde",                Count = 4,  Deposit = 0 },
+        new() { Name = "Stole",                Count = 20, Deposit = 0 }
+    };
+
+    public class StorageItem
+    {
+        public string Name { get; set; } = "";
+        public int Count { get; set; }
+        public double Deposit { get; set; }
+    }
+}
