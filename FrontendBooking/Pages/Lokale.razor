@@ -4,40 +4,25 @@
 @using Radzen
 @using Radzen.Blazor
 @inject DialogService DialogService
-@using Microsoft.AspNetCore.Components
 
 <h1>Lokale</h1>
 
-@if (selectedBuildingId == null)
-{
-    <p>Vælg venligst en bygning for at se kalenderen.</p>
-}
-else
-{
-    <RadzenScheduler TItem="Booking"
-                     Data="@bookings"
-                     StartProperty="Start"
-                     EndProperty="End"
-                     TextProperty="Title"
-                     Height="600px"
-                     @bind-SelectedDate="@selectedDate"
-                     View="SchedulerView.Month"
-                     SlotSelect="@OnSlotSelect"
-                     AppointmentSelect="@OnAppointmentSelect">
+<RadzenScheduler TItem="Booking"
+                 Data="@bookings"
+                 StartProperty="Start"
+                 EndProperty="End"
+                 TextProperty="Title"
+                 Height="600px"
+                 @bind-SelectedDate="@selectedDate"
+                 View="SchedulerView.Month"
+                 SlotSelect="@OnSlotSelect"
+                 AppointmentSelect="@OnAppointmentSelect">
 
-        <RadzenMonthView />
-        <RadzenWeekView />
-        <RadzenDayView />
+    <RadzenMonthView />
+    <RadzenWeekView />
+    <RadzenDayView />
 
-    </RadzenScheduler>
-}
-@if (selectedBuildingId != null)
-{
-    <RadzenButton Text="Skift bygning"
-                  Icon="apartment"
-                  ButtonStyle="ButtonStyle.Secondary"
-                  Click="@OpenBuildingDialog" />
-}
+</RadzenScheduler>
 
 @code {
 
@@ -107,10 +92,10 @@ else
                 await DialogService.Alert(
                     "Vælg venligst en anden dato.",
                     "Datoen er ikke ledig");
-                
-                return;
 
+                return;
             }
+
             // Opret booking i kalenderen
             bookings.Add(new Booking
             {
@@ -126,54 +111,21 @@ else
 
     private bool IsDateAvailable(DateTime start, DateTime end)
     {
-        if (start.Date< DateTime.Today)
+        if (start.Date < DateTime.Today)
         {
             return false;
         }
+
         return !bookings.Any(booking =>
             start < booking.End &&
             end > booking.Start);
     }
-    
+
     // Bookingmodel til kalenderen
     public class Booking
     {
         public string Title { get; set; } = "";
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-    }
-    
-    
-    //modal vindue til tjek af bygning
-    private int? selectedBuildingId;
-
-    private bool buildingDialogOpened;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && !buildingDialogOpened)
-        {
-            buildingDialogOpened = true;
-            await OpenBuildingDialog();
-            StateHasChanged();
-        }
-    }
-
-    private async Task OpenBuildingDialog()
-    {
-        var result = await DialogService.OpenAsync<BuildingSelectionDialog>(
-            "Vælg bygning",
-            null,
-            new DialogOptions
-            {
-                Width = "min(450px, 90vw)",
-                ShowClose = false,
-                CloseDialogOnOverlayClick = false
-            });
-
-        if (result is BuildingSelectionDialog.BuildingOption building)
-        {
-            selectedBuildingId = building.Id;
-        }
     }
 }
