@@ -7,9 +7,6 @@
 
 <h1>Lokale</h1>
 
-<RadzenDatePicker @bind-Value="@selectedDate"
-                  DateFormat="dd-MM-yyyy" />
-
 <RadzenScheduler TItem="Booking"
                  Data="@bookings"
                  StartProperty="Start"
@@ -90,6 +87,15 @@
         // Modtag bookingoplysninger fra BookingDialog
         if (result is BookingDialog.BookingData bookingData)
         {
+            if (!IsDateAvailable(bookingData.Start, bookingData.End))
+            {
+                await DialogService.Alert(
+                    "Vælg venligst en anden dato.",
+                    "Datoen er ikke ledig");
+                
+                return;
+
+            }
             // Opret booking i kalenderen
             bookings.Add(new Booking
             {
@@ -103,6 +109,17 @@
         }
     }
 
+    private bool IsDateAvailable(DateTime start, DateTime end)
+    {
+        if (start.Date< DateTime.Today)
+        {
+            return false;
+        }
+        return !bookings.Any(booking =>
+            start < booking.End &&
+            end > booking.Start);
+    }
+    
     // Bookingmodel til kalenderen
     public class Booking
     {
