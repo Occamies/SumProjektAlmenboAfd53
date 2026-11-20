@@ -73,7 +73,7 @@
     {
         var result = await DialogService.OpenAsync<BookingDialog>(
             "Book fællesrum",
-            new Dictionary<string, object>
+            new Dictionary<string, object?>
             {
                 { "StartDate", date }
             },
