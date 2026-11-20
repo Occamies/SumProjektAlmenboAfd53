@@ -92,6 +92,11 @@ public class ReservationController : ControllerBase
         {
             return Conflict(ex.Message);
         }
+        
+        // Fortæller EF Core at reservationen er ny.
+        _context.Entry(reservation).State = EntityState.Added;
+
+        await _context.SaveChangesAsync();
 
         // Reservationen er allerede tilføjet til Item.Reservations.
         // EF Core tracker den gennem det indlæste Item.

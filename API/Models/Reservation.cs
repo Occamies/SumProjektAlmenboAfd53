@@ -11,7 +11,7 @@ public class Reservation
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     private string Code { get; set; }
-    private bool Cancelled { get; set; }
+    public bool Cancelled { get; set; }
     
     public Guid ItemId { get; set; }
     public Item Item  { get; set; }
