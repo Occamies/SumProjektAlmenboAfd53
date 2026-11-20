@@ -1,0 +1,106 @@
+﻿<RadzenCard class="rules-card">
+    <RadzenText TextStyle="TextStyle.H5" class="rules-title">
+        Rengøring af fællesrum inkluderer:
+    </RadzenText>
+
+    <ol class="rules-list">
+        @foreach (var rule in rules)
+        {
+            <li class="rule">
+                <span class="rule-heading">@rule.Title</span>
+                <ul class="rule-points">
+                    @foreach (var point in rule.Points)
+                    {
+                        <li>@point</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ol>
+</RadzenCard>
+
+<style>
+    .rules-card {
+        max-width: 800px;
+        padding: 30px 40px;
+        border-left: 5px solid var(--rz-primary);
+    }
+
+    .rules-title {
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .rules-list {
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    .rule {
+        margin-bottom: 18px;
+    }
+
+    .rule::marker {
+        font-weight: 600;
+        color: var(--rz-primary);
+    }
+
+    .rule-heading {
+        font-weight: 600;
+    }
+
+    .rule-points {
+        margin-top: 6px;
+        padding-left: 20px;
+        list-style-type: "–  ";
+        color: #444;
+    }
+
+    .rule-points li {
+        margin-bottom: 4px;
+        line-height: 1.5;
+    }
+</style>
+
+@code {
+    private List<Rule> rules = new()
+    {
+        new("Opvask af køkkenredskaber og service", new()
+        {
+            "Vask alle lånte køkkenredskaber, tallerkener, glas, bestik osv.",
+            "Sørg for at tømme opvaskemaskinen, hvis den er fyldt, og sæt alt rent service på plads."
+        }),
+        new("Rengøring af overflader", new()
+        {
+            "Tør alle overflader af, herunder bordplader, køkkenbord, spisebord, komfur, ovn osv., med en ren klud og et passende rengøringsmiddel. Dette gælder også ude på toilettet."
+        }),
+        new("Gulvrengøring", new()
+        {
+            "Støvsug gulvet i fællesrummet og ude på toilettet grundigt for at fjerne snavs, støv og krummer.",
+            "Vask gulvene med gulvrensningsmiddel og rent vand for at fjerne eventuelle pletter eller klistrede områder."
+        }),
+        new("Lukning af vinduer", new()
+        {
+            "Sørg for at lukke alle vinduer efter brug for at forhindre indtrængning af insekter eller fugt."
+        }),
+        new("Fjernelse af fordærvelige fødevarer", new()
+        {
+            "Kontroller køleskabe og frysere for resterende fødevarer og fjern dem.",
+            "Rengør eventuelle spild eller pletter i køleskabet for at forhindre lugt og bakterievækst."
+        }),
+        new("Tømning af skraldespande", new()
+        {
+            "Tøm alle skraldespande i fællesrummet og på toilettet. Tør af, hvis der er spildt efter skraldet."
+        }),
+        new("Tilbagelevering af nøgler", new()
+        {
+            "Sørg for at lånt nøgle til fællesrummet returneres til nøgleboksen."
+        }),
+        new("Ødelagt inventar", new()
+        {
+            "Er der ødelagt inventar, meldes det til ansvarshavende med det samme."
+        })
+    };
+
+    private record Rule(string Title, List<string> Points);
+}

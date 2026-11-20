@@ -1,0 +1,140 @@
+﻿<div class="guide">
+
+    <RadzenCard class="guide-card">
+        <RadzenText TextStyle="TextStyle.H5" class="guide-title">Sådan booker du et fællesrum</RadzenText>
+        <p class="guide-intro">
+            Her kan du læse, hvordan du booker et af boligforeningens fællesrum – fra du vælger tidspunkt,
+            til du afleverer rummet igen. Følg trinene i rækkefølge.
+        </p>
+
+        <ol class="steps">
+            @foreach (var step in steps)
+            {
+                <li class="step">
+                    <span class="step-heading">@step.Title</span>
+                    <p class="step-text">@step.Text</p>
+                </li>
+            }
+        </ol>
+    </RadzenCard>
+
+    <RadzenCard class="guide-card">
+        <RadzenText TextStyle="TextStyle.H6" class="guide-title">Godt at vide</RadzenText>
+        <ul class="tips">
+            @foreach (var tip in tips)
+            {
+                <li>@tip</li>
+            }
+        </ul>
+    </RadzenCard>
+
+    <RadzenCard class="guide-card contact-card">
+        <RadzenText TextStyle="TextStyle.H6" class="guide-title">Har du spørgsmål?</RadzenText>
+        <p>
+            Kan du ikke finde svar her, er du velkommen til at kontakte bestyrelsen på
+            <a href="mailto:post@almenbo-aarhus.dk">post@almenbo-aarhus.dk</a>
+        </p>
+    </RadzenCard>
+
+</div>
+
+<style>
+    .guide {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        max-width: 800px;
+    }
+
+    .guide-card {
+        padding: 30px 40px;
+        border-left: 5px solid var(--rz-primary);
+    }
+
+    .guide-title {
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .guide-intro {
+        color: #444;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .steps {
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    .step {
+        margin-bottom: 18px;
+    }
+
+    .step::marker {
+        font-weight: 600;
+        color: var(--rz-primary);
+    }
+
+    .step-heading {
+        font-weight: 600;
+    }
+
+    .step-text {
+        margin: 4px 0 0 0;
+        color: #444;
+        line-height: 1.5;
+    }
+
+    .tips {
+        padding-left: 20px;
+        list-style-type: "–  ";
+        color: #444;
+        margin: 0;
+    }
+
+    .tips li {
+        margin-bottom: 6px;
+        line-height: 1.5;
+    }
+
+    .contact-card {
+        background-color: #f5f5fa;
+    }
+
+    .contact-card a {
+        font-weight: 600;
+        color: var(--rz-primary);
+    }
+</style>
+
+@code {
+    private List<GuideStep> steps = new()
+    {
+        new("Vælg din bygning",
+            "Bor du i en anden bygning end den, der vises, kan du skifte under \"Change Building\" i menuen til venstre."),
+        new("Find det rette fællesrum",
+            "Under \"Room Information\" kan du se, hvilke fællesrum der findes, og hvad de indeholder af borde, stole, bestik og spil."),
+        new("Vælg dato og tidspunkt",
+            "Gå til \"Common Room\" og find den dag, du ønsker at booke, i kalenderen. Klik på et ledigt tidspunkt for at starte din booking."),
+        new("Udfyld bookingen",
+            "Der åbner et vindue, hvor du udfylder oplysningerne om din booking. Tjek, at dato og tidspunkt er korrekte."),
+        new("Tilføj ekstra udstyr (valgfrit)",
+            "Har du brug for f.eks. grill eller projektor, kan du tilføje det til din booking. Vælg antal og skriv evt. en kommentar. Se priser og depositum under \"Extra Equipment\"."),
+        new("Godkend kontrakten",
+            "Læs lejekontrakten og husets regler igennem, og godkend dem digitalt. Bookingen er først gennemført, når kontrakten er godkendt."),
+        new("Modtag din adgangskode",
+            "Når bookingen er bekræftet, får du en kode til døren. Koden virker kun i det tidsrum, du har booket."),
+        new("Ryd op efter dig",
+            "Når du er færdig, skal rummet gøres rent efter reglerne under \"Rules\". Husk at lukke vinduer og aflevere eventuelle lånte nøgler.")
+    };
+
+    private List<string> tips = new()
+    {
+        "Book i god tid – populære dage som weekender og helligdage bliver hurtigt optaget.",
+        "Depositum for ekstra udstyr betales tilbage, når udstyret er afleveret i god stand.",
+        "Ødelagt inventar eller udstyr skal meldes til bestyrelsen med det samme."
+    };
+
+    private record GuideStep(string Title, string Text);
+}
