@@ -1,0 +1,111 @@
+﻿### For Testing purposes.
+@host=http://localhost:5108
+@personId=eb6dfaab-c94b-45d8-85f3-60029be69d8d
+@lokaleId=394f95fc-286e-4b10-95d0-a4b2ea0dafdc
+@udstyrId=6f508495-b7b4-4c2e-b554-b51acab071c8
+
+### Hent alle personer fra PostgreSQL
+GET {{host}}/api/person
+Accept: application/json
+
+### Opret person i PostgreSQL
+POST {{host}}/api/person
+Content-Type: application/json
+
+{
+  "name": "Test Person",
+  "email": "test@example.com",
+  "address": "Testvej 10",
+  "phone": "12345678"
+}
+
+### Hent en bestemt person fra PostgreSQL
+GET {{host}}/api/person/{{personId}}
+Accept: application/json
+
+### Opdater eksisterende person
+PUT {{host}}/api/person/{{personId}}
+Content-Type: application/json
+
+{
+  "name": "Opdateret Test Person",
+  "email": "opdateret@example.com",
+  "address": "Ny Testvej 20",
+  "phone": "87654321"
+}
+
+### Hent den opdaterede person
+GET {{host}}/api/person/{{personId}}
+Accept: application/json
+
+### Slet en person fra PostgreSQL
+DELETE {{host}}/api/person/{{personId}}
+
+### Kontrollér at personen er slettet
+GET {{host}}/api/person/{{personId}}
+Accept: application/json
+
+### Hent alle lokaler fra PostgreSQL
+GET {{host}}/api/room
+Accept: application/json
+
+### Opret et lokale
+POST {{host}}/api/room
+Content-Type: application/json
+
+{
+  "name": "Fælleslokale",
+  "location": "Stueetagen"
+}
+
+### Hent et bestemt lokale ud fra ID
+GET {{host}}/api/room/{{lokaleId}}
+Accept: application/json
+
+### Opdater et eksisterende lokale
+PUT {{host}}/api/room/{{lokaleId}}
+Content-Type: application/json
+
+{
+  "name": "Stort fælleslokale",
+  "location": "1. sal"
+}
+
+### Slet et lokale
+DELETE {{host}}/api/room/{{lokaleId}}
+
+### 1. Hent alt ekstraudstyr
+GET {{host}}/api/extraequipment
+Accept: application/json
+
+
+### 2. Opret ekstraudstyr
+POST {{host}}/api/extraequipment
+Content-Type: application/json
+
+{
+  "name": "Projektor",
+  "location": "Depot"
+}
+
+
+### 3. Hent ekstraudstyr via ID
+# Erstat GUID med ID fra POST-svaret
+GET {{host}}/api/extraequipment/{{udstyrId}}
+Accept: application/json
+
+
+### 4. Opdater ekstraudstyr
+# Erstat GUID med ID fra POST-svaret
+PUT {{host}}/api/extraequipment/{{udstyrId}}
+Content-Type: application/json
+
+{
+  "name": "4K Projektor",
+  "location": "Fælleslokale"
+}
+
+
+### 5. Slet ekstraudstyr
+# Erstat GUID med ID fra POST-svaret
+DELETE {{host}}/api/extraequipment/{{udstyrId}}

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SUM.Model;
+namespace API.Models;
 
 public class Room : Item
 {
@@ -14,10 +14,16 @@ public class Room : Item
     public void AddToInventory(Item item)
     {
         Inventory.Add(item);
+        item.Update(item.Name, this.Location);
     }
 
     public void RemoveFromInventory(Item item)
     {
+        if (!Inventory.Contains(item))
+        {
+            throw new ArgumentException("Object ikke i inventory");
+        }
         Inventory.Remove(item);
+        
     }
 }
