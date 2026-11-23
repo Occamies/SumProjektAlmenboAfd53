@@ -24,8 +24,15 @@ public class RoomController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllRooms()
     {
-        var rooms = await _context.Rooms.ToListAsync();
-        
+        var rooms = await _context.Rooms
+            .Select(room => new RoomDto
+            {
+                Id = room.Id,
+                Name = room.Name,
+                Location = room.Location
+            })
+            .ToListAsync();
+
         return Ok(rooms);
     }
     
@@ -49,13 +56,20 @@ public class RoomController : ControllerBase
     public async Task<IActionResult> GetRoomById(Guid id)
     {
         var room = await _context.Rooms.FindAsync(id);
-        
+
         if (room == null)
         {
             return NotFound();
         }
-        
-        return Ok(room);
+
+        var roomDto = new RoomDto
+        {
+            Id = room.Id,
+            Name = room.Name,
+            Location = room.Location
+        };
+
+        return Ok(roomDto);
     }
     
     [HttpPut("{id:guid}")]

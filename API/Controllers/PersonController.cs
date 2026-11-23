@@ -26,7 +26,7 @@ public class PersonController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreatePerson(CreatePersonDto dto)
     {
-        // Opretter et Person-objekt ud fra DTO'ens oplysninger.
+        
         var person = new Person(
             dto.Name,
             dto.Email,
@@ -34,42 +34,66 @@ public class PersonController : ControllerBase
             dto.Phone
         );
 
-        // Tilføjer personen til databasen.
+        
         _context.People.Add(person);
 
-        // Gemmer ændringerne i PostgreSQL.
+        
         await _context.SaveChangesAsync();
 
-        // Returnerer 201 Created.
+        var personDto = new PersonDto
+        {
+            Id = person.Id,
+            Name = person.Name,
+            Email = person.Email,
+            Address = person.Address,
+            Phone = person.Phone
+        };
+
         return CreatedAtAction(
-            nameof(GetByPersonId),
+            nameof(GetPersonById),
             new { id = person.Id },
-            person);
+            personDto);
     }
     
     
     [HttpGet]
-    public async Task<IActionResult> GetAllPeople()
+    public async Task<IActionResult> GetAllPersons()
     {
-        // Henter alle personer fra PostgreSQL.
-        var people = await _context.People.ToListAsync();
+        var persons = await _context.People
+            .Select(person => new PersonDto
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Email = person.Email,
+                Address = person.Address,
+                Phone = person.Phone
+            })
+            .ToListAsync();
 
-        // Returnerer personerne som JSON med HTTP-status 200 OK (forhåbentligt).
-        return Ok(people);
+        return Ok(persons);
     }
-
+    
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetByPersonId(Guid id)
+    public async Task<IActionResult> GetPersonById(Guid id)
     {
         var person = await _context.People.FindAsync(id);
 
-        // Hvis personen ikke findes, returneres HTTP 404 Not Found.
+        
         if (person == null)
         {
             return NotFound();
         }
-        
-        return Ok(person);
+
+        var personDto = new PersonDto
+        {
+            Id = person.Id,
+            Name = person.Name,
+            Email = person.Email,
+            Address = person.Address,
+            Phone = person.Phone
+        };
+
+        return Ok(personDto);
     }
     
     [HttpPut("{id:guid}")]
