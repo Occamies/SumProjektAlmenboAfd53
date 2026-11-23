@@ -1,17 +1,19 @@
-﻿
-@page "/"
+﻿@page "/"
 @using FrontendBooking.Components
 @using Radzen
 @using Radzen.Blazor
+@using FrontendBooking.Services
 @inject DialogService DialogService
+@using API.DTOs
+@inject SelectedRoomService RoomState
 
 <h1>Lokale</h1>
 
-<RadzenScheduler TItem="Booking"
-                 Data="@bookings"
-                 StartProperty="Start"
-                 EndProperty="End"
-                 TextProperty="Title"
+
+<RadzenScheduler TItem="ReservationDto"
+                 Data="@Bookings"
+                 StartProperty="StartDate"
+                 EndProperty="EndDate"
                  Height="600px"
                  @bind-SelectedDate="@selectedDate"
                  View="SchedulerView.Month"
@@ -25,35 +27,14 @@
 </RadzenScheduler>
 
 @code {
-
+    //TODO måske tilføje navn til kalenderens aktiviteter (bare fornavn)
     DateTime selectedDate = DateTime.Today;
 
-    Booking? selectedBooking;
+    ReservationDto? selectedBooking;
+    
 
     // Eksempelbookinger i kalenderen
-    List<Booking> bookings = new()
-    {
-        new Booking
-        {
-            Title = "Eksempelbooking",
-            Start = DateTime.Today.AddDays(2).Date.AddHours(12),
-            End = DateTime.Today.AddDays(3).Date.AddHours(11)
-        },
-
-        new Booking
-        {
-            Title = "Anden booking",
-            Start = DateTime.Today.AddDays(5).Date.AddHours(12),
-            End = DateTime.Today.AddDays(6).Date.AddHours(11)
-        },
-
-        new Booking
-        {
-            Title = "Weekendbooking",
-            Start = DateTime.Today.AddDays(8).Date.AddHours(12),
-            End = DateTime.Today.AddDays(10).Date.AddHours(11)
-        }
-    };
+    List<ReservationDto> Bookings { get; set; } = [];
 
     // Når brugeren vælger en dato i kalenderen
     public async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
@@ -63,7 +44,7 @@
 
     // Når brugeren klikker på en eksisterende booking
     public void OnAppointmentSelect(
-        SchedulerAppointmentSelectEventArgs<Booking> args)
+        SchedulerAppointmentSelectEventArgs<ReservationDto> args)
     {
         selectedBooking = args.Data;
     }
@@ -85,9 +66,9 @@
         );
 
         // Modtag bookingoplysninger fra BookingDialog
-        if (result is BookingDialog.BookingData bookingData)
+        if (result is ReservationDto bookingData)
         {
-            if (!IsDateAvailable(bookingData.Start, bookingData.End))
+            if (!IsDateAvailable(bookingData.StartDate, bookingData.EndDate))
             {
                 await DialogService.Alert(
                     "Vælg venligst en anden dato.",
@@ -97,15 +78,10 @@
             }
 
             // Opret booking i kalenderen
-            bookings.Add(new Booking
-            {
-                Title = bookingData.Title,
-                Start = bookingData.Start,
-                End = bookingData.End
-            });
+            Bookings.Add(bookingData);
 
             // Opdater kalenderens dataliste
-            bookings = bookings.ToList();
+            Bookings = Bookings.ToList();
         }
     }
 
@@ -116,16 +92,13 @@
             return false;
         }
 
-        return !bookings.Any(booking =>
-            start < booking.End &&
-            end > booking.Start);
+        return !Bookings.Any(booking =>
+            start < booking.EndDate &&
+            end > booking.StartDate);
     }
-
-    // Bookingmodel til kalenderen
-    public class Booking
+    
+    protected override async Task OnInitializedAsync()
     {
-        public string Title { get; set; } = "";
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
+        Bookings = RoomState.Bookings;
     }
 }

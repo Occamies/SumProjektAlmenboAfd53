@@ -4,7 +4,7 @@
 @using FrontendBooking.Services
 @inject SelectedRoomService RoomState
 
-<p>Du booker lige nu i: <strong>@(RoomState.SelectedRoom ?? "Intet rum valgt")</strong></p>
+<p>Chosen commonroom: <strong>@(RoomState.SelectedRoom.Name ?? "Intet rum valgt")</strong></p>
 
 <RoomPicker OnRoomSelected="@(_ => StateHasChanged())" />
 

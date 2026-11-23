@@ -1,21 +1,37 @@
-﻿namespace FrontendBooking.Services;
+﻿using API.DTOs;
+using System.Net.Http.Json;
+
+namespace FrontendBooking.Services;
 
 public class SelectedRoomService
 {
-    public List<string> Rooms { get; } = new()
+    
+    public async Task LoadRoomes(HttpClient http)
     {
-        "1E", "1F", "1G", "1H"
-    };
+       Rooms = await http.GetFromJsonAsync<List<RoomDto>>("api/room") ?? new List<RoomDto>();
+    }
 
-    public string? SelectedRoom { get; private set; }
+    //Todo tilgå det rigtige api endpoint
+    public async Task LoadReservationsByRoom(HttpClient http)
+    {
+        Bookings = await http.GetFromJsonAsync<List<ReservationDto>>("api/reservation") ?? new List<ReservationDto>();
+    }
+
+    public List<RoomDto> Rooms { get; set; } = [];
+
+    public List<ReservationDto> Bookings { get; set; } = [];
+    
+    
+    public RoomDto? SelectedRoom { get; private set; }
 
     public bool HasRoom => SelectedRoom != null;
 
     public event Action? OnChange;
 
-    public void SelectRoom(string room)
+    public void SelectRoom(RoomDto room)
     {
         SelectedRoom = room;
+        
         OnChange?.Invoke();
     }
 }

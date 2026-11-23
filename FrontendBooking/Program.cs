@@ -9,8 +9,14 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddRadzenComponents();
 
-builder.Services.AddScoped<FrontendBooking.Services.SelectedRoomService>();
+//TODO fix baseaddress
+builder.Services.AddScoped(sp => new HttpClient
+{
+    //BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    BaseAddress = new Uri("http://localhost:5108/")
+});
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+builder.Services.AddScoped<FrontendBooking.Services.SelectedRoomService>();
 
 await builder.Build().RunAsync();

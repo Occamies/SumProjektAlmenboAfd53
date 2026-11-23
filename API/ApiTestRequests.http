@@ -1,12 +1,12 @@
 ﻿### For Testing purposes.
 @host=http://localhost:5108
 @personId=eb6dfaab-c94b-45d8-85f3-60029be69d8d
-@lokaleId=394f95fc-286e-4b10-95d0-a4b2ea0dafdc
+@lokaleId=ec3f2c83-d198-4de8-b6ed-273d8f933c0d
 @udstyrId=6f508495-b7b4-4c2e-b554-b51acab071c8
 @contracId=50114a4a-dbbe-44e1-8e61-f8af2cbc3a74
 @itemId=81ec8adc-2872-4c48-ac36-94516971f5bc
-@personIdTilReservation=9ef3591e-eb55-46e9-9ca2-62c773a3a7b9
-@itemIdTilReservation=164f55af-0159-4dea-9911-09d073a7a603
+@personIdTilReservation=d5462475-9402-4611-8a68-37ab935bd647
+@itemIdTilReservation=ec3f2c83-d198-4de8-b6ed-273d8f933c0d
 @reservationId=12859f7f-7538-40cb-b820-ec707676de56
 
 ### Hent alle personer fra PostgreSQL
@@ -197,6 +197,8 @@ Content-Type: application/json
 ### 3 GET - Hent reservation efter ID
 GET {{host}}/api/Reservation/{{reservationId}}
 Accept: application/json
+
+
 
 
 ### 4. POST - Test dobbeltbooking
