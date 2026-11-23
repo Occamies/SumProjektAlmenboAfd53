@@ -22,7 +22,7 @@ namespace API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SUM.Model.Contract", b =>
+            modelBuilder.Entity("API.Models.Contract", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace API.Migrations
                     b.ToTable("Contracts");
                 });
 
-            modelBuilder.Entity("SUM.Model.Item", b =>
+            modelBuilder.Entity("API.Models.Item", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,7 +75,7 @@ namespace API.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("SUM.Model.Person", b =>
+            modelBuilder.Entity("API.Models.Person", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,11 +102,14 @@ namespace API.Migrations
                     b.ToTable("People");
                 });
 
-            modelBuilder.Entity("SUM.Model.Reservation", b =>
+            modelBuilder.Entity("API.Models.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("Cancelled")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid?>("ContractId")
                         .HasColumnType("uuid");
@@ -134,40 +137,40 @@ namespace API.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("SUM.Model.ExtraEquipment", b =>
+            modelBuilder.Entity("API.Models.ExtraEquipment", b =>
                 {
-                    b.HasBaseType("SUM.Model.Item");
+                    b.HasBaseType("API.Models.Item");
 
                     b.HasDiscriminator().HasValue("ExtraEquipment");
                 });
 
-            modelBuilder.Entity("SUM.Model.Room", b =>
+            modelBuilder.Entity("API.Models.Room", b =>
                 {
-                    b.HasBaseType("SUM.Model.Item");
+                    b.HasBaseType("API.Models.Item");
 
                     b.HasDiscriminator().HasValue("Room");
                 });
 
-            modelBuilder.Entity("SUM.Model.Item", b =>
+            modelBuilder.Entity("API.Models.Item", b =>
                 {
-                    b.HasOne("SUM.Model.Room", null)
+                    b.HasOne("API.Models.Room", null)
                         .WithMany("Inventory")
                         .HasForeignKey("RoomId");
                 });
 
-            modelBuilder.Entity("SUM.Model.Reservation", b =>
+            modelBuilder.Entity("API.Models.Reservation", b =>
                 {
-                    b.HasOne("SUM.Model.Contract", "Contract")
+                    b.HasOne("API.Models.Contract", "Contract")
                         .WithMany()
                         .HasForeignKey("ContractId");
 
-                    b.HasOne("SUM.Model.Item", "Item")
+                    b.HasOne("API.Models.Item", "Item")
                         .WithMany("Reservations")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SUM.Model.Person", "Person")
+                    b.HasOne("API.Models.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -180,12 +183,12 @@ namespace API.Migrations
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("SUM.Model.Item", b =>
+            modelBuilder.Entity("API.Models.Item", b =>
                 {
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("SUM.Model.Room", b =>
+            modelBuilder.Entity("API.Models.Room", b =>
                 {
                     b.Navigation("Inventory");
                 });

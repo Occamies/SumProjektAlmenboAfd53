@@ -3,6 +3,11 @@
 @personId=eb6dfaab-c94b-45d8-85f3-60029be69d8d
 @lokaleId=394f95fc-286e-4b10-95d0-a4b2ea0dafdc
 @udstyrId=6f508495-b7b4-4c2e-b554-b51acab071c8
+@contracId=50114a4a-dbbe-44e1-8e61-f8af2cbc3a74
+@itemId=81ec8adc-2872-4c48-ac36-94516971f5bc
+@personIdTilReservation=9ef3591e-eb55-46e9-9ca2-62c773a3a7b9
+@itemIdTilReservation=164f55af-0159-4dea-9911-09d073a7a603
+@reservationId=12859f7f-7538-40cb-b820-ec707676de56
 
 ### Hent alle personer fra PostgreSQL
 GET {{host}}/api/person
@@ -45,6 +50,8 @@ DELETE {{host}}/api/person/{{personId}}
 GET {{host}}/api/person/{{personId}}
 Accept: application/json
 
+####################################################################################
+
 ### Hent alle lokaler fra PostgreSQL
 GET {{host}}/api/room
 Accept: application/json
@@ -73,6 +80,8 @@ Content-Type: application/json
 
 ### Slet et lokale
 DELETE {{host}}/api/room/{{lokaleId}}
+
+####################################################################################
 
 ### 1. Hent alt ekstraudstyr
 GET {{host}}/api/extraequipment
@@ -109,3 +118,147 @@ Content-Type: application/json
 ### 5. Slet ekstraudstyr
 # Erstat GUID med ID fra POST-svaret
 DELETE {{host}}/api/extraequipment/{{udstyrId}}
+
+####################################################################################
+### 1. hent alle kontrakter
+GET {{host}}/api/Contract
+Accept: application/json
+
+### 2. opret en kontrakt
+### POST - Opret Contract
+POST http://localhost:5108/api/Contract
+Content-Type: application/json
+
+{
+  "date": "2026-12-15"
+}
+
+### 3. GET id
+GET {{host}}/api/Contract/{{contracId}}
+Accept: application/json
+
+### 4. Delete
+DELETE {{host}}/api/Contract/{{contracId}}
+
+####################################################################################
+### 1. GET - Hent alle Items
+GET {{host}}/api/Item
+Accept: application/json
+
+
+### 2. POST - Opret Item
+POST {{host}}/api/Item
+Content-Type: application/json
+
+{
+  "name": "Fælleslokale A",
+  "location": "Bygning 1"
+}
+
+
+### 3. GET - Hent Item efter ID
+GET {{host}}/api/Item/{{itemId}}
+Accept: application/json
+
+
+### 4. PUT - Opdater Item
+PUT {{host}}/api/Item/{{itemId}}
+Content-Type: application/json
+
+{
+  "name": "Fælleslokale B",
+  "location": "Bygning 2"
+}
+
+
+### 5. GET - Kontroller opdatering
+GET {{host}}/api/Item/{{itemId}}
+Accept: application/json
+
+####################################################################################
+
+### 1. GET - Hent alle reservationer
+GET {{host}}/api/Reservation
+Accept: application/json
+
+
+### 2 POST - Opret reservation
+POST {{host}}/api/Reservation
+Content-Type: application/json
+
+{
+  "itemId": "{{itemIdTilReservation}}",
+  "personId": "{{personIdTilReservation}}",
+  "startDate": "2026-12-15T10:00:00Z",
+  "endDate": "2026-12-15T14:00:00Z"
+}
+
+
+### 3 GET - Hent reservation efter ID
+GET {{host}}/api/Reservation/{{reservationId}}
+Accept: application/json
+
+
+### 4. POST - Test dobbeltbooking
+# 409 Conflict
+POST {{host}}/api/Reservation
+Content-Type: application/json
+
+{
+  "itemId": "{{itemIdTilReservation}}",
+  "personId": "{{personIdTilReservation}}",
+  "startDate": "2026-12-15T11:00:00Z",
+  "endDate": "2026-12-15T13:00:00Z"
+}
+
+
+### 5 POST - Test ugyldigt datointerval
+# 400 Bad Request
+POST {{host}}/api/Reservation
+Content-Type: application/json
+
+{
+  "itemId": "{{itemIdTilReservation}}",
+  "personId": "{{personIdTilReservation}}",
+  "startDate": "2026-12-15T14:00:00Z",
+  "endDate": "2026-12-15T10:00:00Z"
+}
+
+
+### 6 POST - Test manglende Item
+# 404 Not Found
+POST {{host}}/api/Reservation
+Content-Type: application/json
+
+{
+  "itemId": "00000000-0000-0000-0000-000000000000",
+  "personId": "{{personIdTilReservation}}",
+  "startDate": "2026-12-16T10:00:00Z",
+  "endDate": "2026-12-16T14:00:00Z"
+}
+
+
+### 7 PUT - Annuller med forkert kode
+# 400 Bad Request
+PUT {{host}}/api/Reservation/{{reservationId}}/cancel
+Content-Type: application/json
+
+{
+  "code": "forkert"
+}
+
+
+### 8. PUT - Annuller med korrekt testkode
+# Din Reservation-klasse bruger midlertidigt "1234". - obs på at rette det
+# Forventet: 204 No Content
+PUT {{host}}/api/Reservation/{{reservationId}}/cancel
+Content-Type: application/json
+
+{
+  "code": "1234"
+}
+
+
+### 9 GET - Kontroller reservation efter annullering
+GET {{host}}/api/Reservation/{{reservationId}}
+Accept: application/json
