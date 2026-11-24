@@ -34,19 +34,34 @@ public class Item
 
     public Reservation CreateReservation(DateTime startDate, DateTime endDate, Person person)
     {
+        if (person is null)
+        {
+            throw new ArgumentException("Bruger mangler");
+        }
+
+        if (startDate == default)
+        {
+            throw new ArgumentException("Startdato skal tilføjes");
+        }
+
+        if (endDate == default)
+        {
+            throw new ArgumentException("Slutdato skal tilføjes");
+        }
+
         if (endDate <= startDate)
         {
             throw new ArgumentException("EndDate skal være efter StartDate");
         }
 
-        if (startDate.Date.CompareTo(DateTime.Today) < 0)
+        if (startDate.Date < DateTime.Today)
         {
-            throw new ArgumentException("StartDate skal tidligst idag");
+            throw new ArgumentException("StartDate skal tidligst være idag");
         }
 
         if (!IsAvailable(startDate, endDate))
         {
-            throw new InvalidOperationException("Reservation is not available");
+            throw new InvalidOperationException("Reservationen er ikke tilgængelig");
         }
         
         var reservation = new Reservation(startDate, endDate, this, person);
