@@ -113,7 +113,7 @@ public class CreateReservationTests
         Assert.Equal("Startdato skal tilføjes", exception.Message);
     }
     
-    //Test for at sikre at startdate ikke er null
+    //Test for at sikre at enddate ikke er null
     [Fact]
     public void CreateReservationNullEndDateTest()
     {
