@@ -1,19 +1,23 @@
 ﻿
+@using API.DTOs
 @using Radzen
 @using Radzen.Blazor
 @using FrontendBooking.Components
+@using FrontendBooking.Services
 @inject DialogService DialogService
+@inject HttpClient http
+@inject SelectedRoomService RoomState
 
 <RadzenStack Gap="15px" Orientation="Orientation.Horizontal">
 
     @* Bookingperiode og ekstra equipment *@
     <RadzenStack Gap="15px">
+        <h3>@SelectedRoom?.Name</h3>
 
         <RadzenText Text="Bookingperiode"
                     TextStyle="TextStyle.H5"/>
 
         <b>Valgt dato</b>
-
         <p>Startdato: @StartDate.ToString("dd-MM-yyyy") kl. 12.00</p>
         <p>Slutdato: @EndDate.ToString("dd-MM-yyyy") kl. 11.00</p>
 
@@ -84,6 +88,7 @@
 @code {
 
     [Parameter] public DateTime StartDate { get; set; }
+    [Parameter] public RoomDto? SelectedRoom { get; set; } 
 
     int numberOfDays = 1;
 
@@ -115,7 +120,7 @@
         }
     }
 
-    void Submit()
+    async void Submit()
     {
         if (string.IsNullOrWhiteSpace(fullName) ||
             string.IsNullOrWhiteSpace(email) ||
@@ -124,30 +129,31 @@
         {
             return;
         }
-        var booking = new BookingData
-        {
-            Title = fullName,
-            Start = StartDate.Date.AddHours(12),
-            End = EndDate,
-            FullName = fullName,
-            Email = email,
-            Phone = phone,
-            Address = address
-        };
-        
-        DialogService.Close(booking);
-    }
-    public class BookingData
-    {
-        public string Title { get; set; } = "";
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
 
-        public string FullName { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string Phone { get; set; } = "";
-        public string Address { get; set; } = "";
+        PersonDto person = new PersonDto(fullName, email, address, phone);
+
+        var response = await http.PostAsJsonAsync("api/person", person);
+
+        if (response.IsSuccessStatusCode)
+        {
+            person = await response.Content.ReadFromJsonAsync<PersonDto>();
+        }
+
+
+        ReservationDto reservation = new ReservationDto(RoomState.SelectedRoom.Id, person.Id, StartDate, EndDate);
+        
+        var responseReservation = await http.PostAsJsonAsync("api/reservation", reservation);
+
+        if (responseReservation.IsSuccessStatusCode)
+        {
+            reservation = await responseReservation.Content.ReadFromJsonAsync<ReservationDto>();
+            
+            Console.WriteLine($"Person oprettet: {reservation?.StartDate}");
+        }
+        
+        //todo fix så den sender rigtig data
+        DialogService.Close(reservation);
+        
     }
-    
     
 }

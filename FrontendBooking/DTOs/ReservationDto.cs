@@ -8,4 +8,12 @@ public class ReservationDto
     public Guid PersonId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+
+    public ReservationDto(Guid itemId, Guid personId, DateTime startDate, DateTime endDate)
+    {
+        ItemId = itemId;
+        PersonId = personId;
+        StartDate = startDate;
+        EndDate = endDate;
+    }
 }

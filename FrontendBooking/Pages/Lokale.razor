@@ -1,7 +1,5 @@
 ﻿@page "/"
 @using FrontendBooking.Components
-@using Radzen
-@using Radzen.Blazor
 @using FrontendBooking.Services
 @inject DialogService DialogService
 @using API.DTOs
@@ -9,7 +7,7 @@
 @inject HttpClient http
 @implements IDisposable
 
-<h1>Lokale</h1>
+<h1>Lokale @RoomState.SelectedRoom?.Name</h1>
 
 
 <RadzenScheduler TItem="ReservationDto"
@@ -30,7 +28,6 @@
 
 
 @code {
-    //TODO måske tilføje navn til kalenderens aktiviteter (bare fornavn)
     DateTime selectedDate = DateTime.Today;
 
     ReservationDto? selectedBooking;

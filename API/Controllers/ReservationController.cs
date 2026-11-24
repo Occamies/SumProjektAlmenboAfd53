@@ -78,11 +78,18 @@ public class ReservationController : ControllerBase
 
         Reservation reservation;
 
+        
         try
         {
+            DateTime startDate = DateTime.SpecifyKind(
+                dto.StartDate, DateTimeKind.Utc);
+            DateTime endDate = DateTime.SpecifyKind(
+                dto.EndDate, DateTimeKind.Utc);
+            
+            
             reservation = item.CreateReservation(
-                dto.StartDate,
-                dto.EndDate,
+                startDate,
+                endDate,
                 person);
         }
         catch (ArgumentException ex)
