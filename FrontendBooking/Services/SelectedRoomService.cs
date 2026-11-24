@@ -45,4 +45,11 @@ public class SelectedRoomService
         
         OnChange?.Invoke();
     }
+    
+    //TODO select ekstra equipment
+    //Todo cancel reservation
+    //TODO setup med kontrakt
+    //TODO skrive kommentarer
+    
+    //TODO kaste exceptions.
 }

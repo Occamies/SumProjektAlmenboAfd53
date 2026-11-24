@@ -138,8 +138,8 @@
         {
             person = await response.Content.ReadFromJsonAsync<PersonDto>();
         }
-
-
+        //todo fejlsikring på response? (else)
+        
         ReservationDto reservation = new ReservationDto(RoomState.SelectedRoom.Id, person.Id, StartDate, EndDate);
         
         var responseReservation = await http.PostAsJsonAsync("api/reservation", reservation);
@@ -147,11 +147,9 @@
         if (responseReservation.IsSuccessStatusCode)
         {
             reservation = await responseReservation.Content.ReadFromJsonAsync<ReservationDto>();
-            
-            Console.WriteLine($"Person oprettet: {reservation?.StartDate}");
-        }
+        } 
+        //todo fejlsikring på response? (else)
         
-        //todo fix så den sender rigtig data
         DialogService.Close(reservation);
         
     }

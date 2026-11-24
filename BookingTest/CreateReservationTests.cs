@@ -15,7 +15,7 @@ public class CreateReservationTests
         
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
         sut.CreateReservation(startDate, endDate, testPerson);
@@ -33,7 +33,7 @@ public class CreateReservationTests
         
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(-1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
         var exception = Assert.Throws<ArgumentException>(() =>
@@ -71,7 +71,7 @@ public class CreateReservationTests
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
         var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
-        var testPerson2 = new Person("Lasse", "LasseHarEnMail@hotmail.dk", "Hjemme hos Lasse Gade", "4206942069");
+        var testPerson2 = new Person("Lasse", "LasseHarEnMail@hotmail.dk", "Hjemme hos Lasse Gade", "45069420");
         
         sut.CreateReservation(startDate, endDate, testPerson);
         

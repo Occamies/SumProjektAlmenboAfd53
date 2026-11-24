@@ -12,7 +12,7 @@ builder.Services.AddRadzenComponents();
 //TODO fix baseaddress
 builder.Services.AddScoped(sp => new HttpClient
 {
-    //BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    //BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) snak med benn
     BaseAddress = new Uri("http://localhost:5108/")
 });
 

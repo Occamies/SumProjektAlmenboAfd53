@@ -14,7 +14,7 @@ public class CancelReservationTests
 
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         
         item.CreateReservation(startDate, endDate, testPerson);
         var sut = item.LastReservation();
@@ -34,7 +34,7 @@ public class CancelReservationTests
 
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         
         item.CreateReservation(startDate, endDate, testPerson);
         var sut = item.LastReservation();
