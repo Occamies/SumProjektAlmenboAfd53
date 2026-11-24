@@ -2,7 +2,7 @@
 
 public class ReservationDto
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = "Reserveret";
     public Guid Id { get; set; }
     public Guid ItemId { get; set; }
     public Guid PersonId { get; set; }

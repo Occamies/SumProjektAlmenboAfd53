@@ -49,6 +49,7 @@ public class ReservationController : ControllerBase
                 PersonId = r.PersonId,
                 StartDate = r.StartDate,
                 EndDate = r.EndDate
+
             })
             .FirstOrDefaultAsync();
 
@@ -95,9 +96,7 @@ public class ReservationController : ControllerBase
         
         // Fortæller EF Core at reservationen er ny.
         _context.Entry(reservation).State = EntityState.Added;
-
-        await _context.SaveChangesAsync();
-
+        
         // Reservationen er allerede tilføjet til Item.Reservations.
         // EF Core tracker den gennem det indlæste Item.
         await _context.SaveChangesAsync();

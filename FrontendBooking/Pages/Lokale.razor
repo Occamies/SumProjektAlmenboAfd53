@@ -6,14 +6,17 @@
 @inject DialogService DialogService
 @using API.DTOs
 @inject SelectedRoomService RoomState
+@inject HttpClient http
+@implements IDisposable
 
 <h1>Lokale</h1>
 
 
 <RadzenScheduler TItem="ReservationDto"
                  Data="@Bookings"
-                 StartProperty="StartDate"
-                 EndProperty="EndDate"
+                 StartProperty="@nameof(ReservationDto.StartDate)"
+                 EndProperty="@nameof(ReservationDto.EndDate)"
+                 TextProperty= "@nameof(ReservationDto.Name)"
                  Height="600px"
                  @bind-SelectedDate="@selectedDate"
                  View="SchedulerView.Month"
@@ -23,8 +26,8 @@
     <RadzenMonthView />
     <RadzenWeekView />
     <RadzenDayView />
-
 </RadzenScheduler>
+
 
 @code {
     //TODO måske tilføje navn til kalenderens aktiviteter (bare fornavn)
@@ -52,11 +55,22 @@
     // Åbner bookingdialogen
     public async Task OpenBookingDialog(DateTime date)
     {
+        
+        if (RoomState.SelectedRoom == null)
+        {
+            await DialogService.Alert(
+                "Du skal vælge et lokale først.",
+                "Intet lokale valgt");
+
+            return;
+        }
+        
         var result = await DialogService.OpenAsync<BookingDialog>(
             "Book fællesrum",
             new Dictionary<string, object?>
             {
-                { "StartDate", date }
+                { "StartDate", date },
+                {"SelectedRoom", RoomState.SelectedRoom}
             },
             new DialogOptions
             {
@@ -93,12 +107,28 @@
         }
 
         return !Bookings.Any(booking =>
-            start < booking.EndDate &&
+            start <= booking.EndDate &&
             end > booking.StartDate);
     }
     
     protected override async Task OnInitializedAsync()
     {
+        RoomState.OnChange += UpdateBookings;
+        await RoomState.LoadReservationsByRoom(http);
         Bookings = RoomState.Bookings;
     }
+    
+    //disse ændrer data i kalenderen når der skiftes lokale. dispose nulstiller og update finder de korrekte bookinger.
+    private void UpdateBookings()
+    {
+        Bookings = RoomState.Bookings;
+        InvokeAsync(StateHasChanged);
+    }
+    
+    public void Dispose()
+    {
+        RoomState.OnChange -= UpdateBookings;
+    }
+
+
 }

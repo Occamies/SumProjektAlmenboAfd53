@@ -1,12 +1,12 @@
 ﻿### For Testing purposes.
 @host=http://localhost:5108
 @personId=eb6dfaab-c94b-45d8-85f3-60029be69d8d
-@lokaleId=ec3f2c83-d198-4de8-b6ed-273d8f933c0d
+@lokaleId=9ec494cd-678e-4f81-9930-39131f4d3e69
 @udstyrId=6f508495-b7b4-4c2e-b554-b51acab071c8
 @contracId=50114a4a-dbbe-44e1-8e61-f8af2cbc3a74
 @itemId=81ec8adc-2872-4c48-ac36-94516971f5bc
 @personIdTilReservation=d5462475-9402-4611-8a68-37ab935bd647
-@itemIdTilReservation=ec3f2c83-d198-4de8-b6ed-273d8f933c0d
+@itemIdTilReservation=9ec494cd-678e-4f81-9930-39131f4d3e69
 @reservationId=12859f7f-7538-40cb-b820-ec707676de56
 
 ### Hent alle personer fra PostgreSQL
@@ -61,7 +61,7 @@ POST {{host}}/api/room
 Content-Type: application/json
 
 {
-  "name": "Fælleslokale",
+  "name": "Fælleslokale 2",
   "location": "Stueetagen"
 }
 
@@ -189,8 +189,8 @@ Content-Type: application/json
 {
   "itemId": "{{itemIdTilReservation}}",
   "personId": "{{personIdTilReservation}}",
-  "startDate": "2026-12-15T10:00:00Z",
-  "endDate": "2026-12-15T14:00:00Z"
+  "startDate": "2026-12-24T12:00:00Z",
+  "endDate": "2026-12-26T11:00:00Z"
 }
 
 
