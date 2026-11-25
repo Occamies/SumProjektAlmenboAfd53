@@ -23,6 +23,9 @@ public class Item
         return Reservations[Reservations.Count - 1];
     }
 
+    // hjælpemetode til CreateReservation. Sørger for at der ikke kan opstå dobbeltbooking.
+    // Guid? ignoreReservationId bruges til at sørge for at der ikke bliver konflikt med
+    // den tror der er allerede booket på grund af den reservation man er ved at oprette
     private bool IsAvailable(DateTime startDate, DateTime endDate, Guid? ignoreReservationId = null)
     {
         return !Reservations.Any( r=>

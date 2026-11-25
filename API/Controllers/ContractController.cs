@@ -11,14 +11,17 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ContractController : ControllerBase
 {
+    // Gemm en reference til vores EF Core DbContext.
+    // readonly betyder, at feltet ikke kan tildeles en ny værdi efter initialisering.
     private readonly BookingContext _context;
     
+    // ASP.NET Core leverer automatisk BookingContext gennem Dependency Injection.
     public ContractController(BookingContext context)
     {
         _context = context;
     }
     
-    // Hent all
+    // Hent all kontrakter
     [HttpGet]
     public async Task<IActionResult> GetAllContracts()
     {
@@ -35,7 +38,7 @@ public class ContractController : ControllerBase
         return Ok(contracts);
     }
 
-    // Hent ud fra Id
+    // Hent kontrakt ud fra Id
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetContractById(Guid id)
     {
@@ -53,7 +56,7 @@ public class ContractController : ControllerBase
         });
     }
 
-    // OPret
+    // Opret kontrakt
     [HttpPost]
     public async Task<IActionResult> CreateContract(
         CreateContractDto dto)
@@ -74,12 +77,8 @@ public class ContractController : ControllerBase
                 SignedByAdmin = contract.SignedByAdmin
             });
     }
-
-    // OPdater
-    // hvad er vores overjelser om at opdatere en booking? er det noget vi tilader?
-    // hvis ja skal logikken så være her eller på item?
     
-    // Delete
+    // Slet kontrakt
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteContract(Guid id)
     {

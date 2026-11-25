@@ -17,18 +17,16 @@ public class Contract
         Date = date;
     }
 
+    // Bruges til at underskrives af bruger
     public void SignUser()
     {
         SignedByUser = true;
     }
 
+    // Bruges til at underskrives af admin
+    // Ikke implementeret endnu
     public void SignAdmin()
     {
         SignedByAdmin = true;
-    }
-    
-    public void Update(DateOnly date)
-    {
-        Date = date;
     }
 }

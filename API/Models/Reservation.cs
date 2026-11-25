@@ -27,7 +27,7 @@ public class Reservation
         Id = Guid.NewGuid();
         StartDate = startDate;
         EndDate = endDate;
-        Code = "1234"; //TODO Generate this!
+        Code = "1234"; 
         Item = item;
         Contract = null;
         Person = person;
@@ -39,7 +39,7 @@ public class Reservation
         Id = Guid.NewGuid();
         StartDate = startDate;
         EndDate = endDate;
-        Code = "1234"; //TODO Generate this!
+        Code = "1234";
         ItemId = itemId;
         Contract = null;
         PersonId = personId;
@@ -67,6 +67,7 @@ public class Reservation
         return true;
     }
     
+    // Setter til kontrakt
     public void AttachContract(Contract contract)
     {
         ArgumentNullException.ThrowIfNull(contract);

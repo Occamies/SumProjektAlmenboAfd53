@@ -10,14 +10,17 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ReservationController : ControllerBase
 {
+    // Gemm en reference til vores EF Core DbContext.
+    // readonly betyder, at feltet ikke kan tildeles en ny værdi efter initialisering.
     private readonly BookingContext _context;
 
+    // ASP.NET Core leverer automatisk BookingContext gennem Dependency Injection.
     public ReservationController(BookingContext context)
     {
         _context = context;
     }
 
-    // Hent alle
+    // Hent alle reservationer der ikke er aflyst
     [HttpGet]
     public async Task<IActionResult> GetAllReservations()
     {
@@ -36,7 +39,7 @@ public class ReservationController : ControllerBase
         return Ok(reservations);
     }
 
-    // Hent ud fra id
+    // Hent reservation ud fra id
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetReservationById(Guid id)
     {
@@ -58,7 +61,7 @@ public class ReservationController : ControllerBase
         return Ok(reservation);
     }
 
-    // Create
+    // Opret reservation
     [HttpPost]
     public async Task<IActionResult> CreateReservation(
         CreateReservationDto dto)
@@ -88,7 +91,6 @@ public class ReservationController : ControllerBase
             DateTime endDate = DateTime.SpecifyKind(
                 dto.EndDate, DateTimeKind.Utc);
 
-
             reservation = item.CreateReservation(
                 startDate,
                 endDate,
@@ -103,12 +105,13 @@ public class ReservationController : ControllerBase
             return Conflict(ex.Message);
         }
 
-        // Kontraktt oprettes og underskrives af bruger
+        // Kontrakt oprettes og underskrives af bruger
         var contract = new Contract(dto.Contract.Date);
         contract.SignUser();
+        // Vedhæfter kontrakt til reservationen
         reservation.AttachContract(contract);
 
-        // Fortæller EF Core at reservationen er ny.
+        // Fortæller EF Core at reservationen og kontrakten er ny.
         _context.Entry(reservation).State = EntityState.Added;
         _context.Entry(contract).State = EntityState.Added;
 
@@ -139,7 +142,7 @@ public class ReservationController : ControllerBase
             result);
     }
 
-    // Annuler? slet? hvad gør vi her??
+    // Aflys reservation
     [HttpPut("{id:guid}/cancel")]
     public async Task<IActionResult> CancelReservation(
         Guid id, CancelReservationDto dto)

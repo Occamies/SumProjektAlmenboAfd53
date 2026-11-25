@@ -23,6 +23,7 @@ public class PersonController : ControllerBase
 
     // Crud funktioner -------------------------------------------------------------------------------------
     
+    // Opret person
     [HttpPost]
     public async Task<IActionResult> CreatePerson(CreatePersonDto dto)
     {
@@ -55,7 +56,7 @@ public class PersonController : ControllerBase
             personDto);
     }
     
-    
+    // Hent alle personer
     [HttpGet]
     public async Task<IActionResult> GetAllPersons()
     {
@@ -73,6 +74,7 @@ public class PersonController : ControllerBase
         return Ok(persons);
     }
     
+    // Hent person ud fra Id
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetPersonById(Guid id)
     {
@@ -96,6 +98,7 @@ public class PersonController : ControllerBase
         return Ok(personDto);
     }
     
+    // Opdaterer person
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdatePerson(
         Guid id,
@@ -123,6 +126,7 @@ public class PersonController : ControllerBase
         return NoContent();
     }
     
+    // Slet person
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeletePerson(Guid id)
     {
