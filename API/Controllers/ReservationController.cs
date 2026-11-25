@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
 using API.DTOs;
@@ -12,7 +11,7 @@ namespace API.Controllers;
 public class ReservationController : ControllerBase
 {
     private readonly BookingContext _context;
-    
+
     public ReservationController(BookingContext context)
     {
         _context = context;
@@ -50,7 +49,6 @@ public class ReservationController : ControllerBase
                 PersonId = r.PersonId,
                 StartDate = r.StartDate,
                 EndDate = r.EndDate
-
             })
             .FirstOrDefaultAsync();
 
@@ -65,13 +63,16 @@ public class ReservationController : ControllerBase
     public async Task<IActionResult> CreateReservation(
         CreateReservationDto dto)
     {
+        if (dto.Contract is null)
+            return BadRequest("Regler og vilkår skal accepteres.");
+
         var item = await _context.Items
             .Include(i => i.Reservations)
             .FirstOrDefaultAsync(i => i.Id == dto.ItemId);
 
         if (item == null)
             return NotFound("Item blev ikke fundet.");
-        
+
         var person = await _context.People.FindAsync(dto.PersonId);
 
         if (person == null)
@@ -79,15 +80,15 @@ public class ReservationController : ControllerBase
 
         Reservation reservation;
 
-        
+
         try
         {
             DateTime startDate = DateTime.SpecifyKind(
                 dto.StartDate, DateTimeKind.Utc);
             DateTime endDate = DateTime.SpecifyKind(
                 dto.EndDate, DateTimeKind.Utc);
-            
-            
+
+
             reservation = item.CreateReservation(
                 startDate,
                 endDate,
@@ -101,10 +102,16 @@ public class ReservationController : ControllerBase
         {
             return Conflict(ex.Message);
         }
-        
+
+        // Kontraktt oprettes og underskrives af bruger
+        var contract = new Contract(dto.Contract.Date);
+        contract.SignUser();
+        reservation.AttachContract(contract);
+
         // Fortæller EF Core at reservationen er ny.
         _context.Entry(reservation).State = EntityState.Added;
-        
+        _context.Entry(contract).State = EntityState.Added;
+
         // Reservationen er allerede tilføjet til Item.Reservations.
         // EF Core tracker den gennem det indlæste Item.
         await _context.SaveChangesAsync();
@@ -115,8 +122,16 @@ public class ReservationController : ControllerBase
             ItemId = item.Id,
             PersonId = person.Id,
             StartDate = reservation.StartDate,
-            EndDate = reservation.EndDate
+            EndDate = reservation.EndDate,
+            Contract = new ContractDto
+            {
+                Id = contract.Id,
+                Date = contract.Date,
+                SignedByUser = contract.SignedByUser,
+                SignedByAdmin = contract.SignedByAdmin
+            }
         };
+
 
         return CreatedAtAction(
             nameof(GetReservationById),

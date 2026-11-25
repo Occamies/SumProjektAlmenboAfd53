@@ -1,4 +1,5 @@
 ﻿
+@using System.Net
 @using API.DTOs
 @using Radzen
 @using Radzen.Blazor
@@ -22,11 +23,11 @@
         <p>Slutdato: @EndDate.ToString("dd-MM-yyyy") kl. 11.00</p>
 
         <RadzenStack Gap="5px" Orientation="Orientation.Horizontal">
-            <RadzenLabel Text="Antal dage" />
+            <RadzenLabel Text="Antal dage"/>
             <RadzenNumeric @bind-Value="@numberOfDays"
                            Min="1"
                            Max="7"
-                           Style="min-width: 20%" />
+                           Style="min-width: 20%"/>
         </RadzenStack>
 
         <RadzenButton Text="Ekstra equipment"
@@ -41,14 +42,14 @@
                 <b>Valgt ekstra equipment:</b>
                 @foreach (var item in selectedEquipment.Where(x => x.Count > 0))
                 {
-                <RadzenStack Orientation="Orientation.Horizontal">
-                    <p>@item.Name: @item.Count stk.</p>
-                    
-                    @if (item.Depositum > 0)
-                    {
-                        <p>Depositum: @(item.Depositum * item.Count) kr.</p>
-                    }
-                </RadzenStack>
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <p>@item.Name: @item.Count stk.</p>
+
+                        @if (item.Depositum > 0)
+                        {
+                            <p>Depositum: @(item.Depositum * item.Count) kr.</p>
+                        }
+                    </RadzenStack>
                 }
             </div>
         }
@@ -77,9 +78,19 @@
                        Placeholder="Address"
                        Style="width: 100%"/>
 
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="8px">
+            <RadzenCheckBox @bind-Value="acceptedTerms" TValue="bool" Name="acceptTerms"/>
+            <span>
+                Jeg accepterer
+                <a href="#" @onclick="OpenContractDialog" @onclick:preventDefault="true">regler og vilkår</a>
+            </span>
+        </RadzenStack>
+
         <RadzenButton Text="Book"
                       ButtonStyle="ButtonStyle.Primary"
+                      Disabled="@(!acceptedTerms)"
                       Click="@Submit"/>
+
 
     </RadzenStack>
 
@@ -88,7 +99,7 @@
 @code {
 
     [Parameter] public DateTime StartDate { get; set; }
-    [Parameter] public RoomDto? SelectedRoom { get; set; } 
+    [Parameter] public RoomDto? SelectedRoom { get; set; }
 
     int numberOfDays = 1;
 
@@ -96,11 +107,24 @@
     string email = "";
     string phone = "";
     string address = "";
+    bool acceptedTerms;
 
     DateTime EndDate => StartDate.Date.AddDays(numberOfDays).AddHours(11);
 
     // Liste med det valgte equipment
     List<EkstraEquipmentDialog.EquipmentItem> selectedEquipment = new();
+
+    // åbner ContractDialog, til at se regler og vilkår
+    private async Task OpenContractDialog()
+    {
+        await DialogService.OpenAsync<ContractDialog>(
+            "Regler og vilkår",
+            null,
+            new DialogOptions
+            {
+                Width = "min(90vw, 500px)"
+            });
+    }
 
     // Åbner modalvinduet med ekstra equipment
     private async Task OpenEquipmentDialog()
@@ -130,28 +154,49 @@
             return;
         }
 
+        if (!acceptedTerms)
+            return;
+
         PersonDto person = new PersonDto(fullName, email, address, phone);
 
         var response = await http.PostAsJsonAsync("api/person", person);
 
-        if (response.IsSuccessStatusCode)
-        {
-            person = await response.Content.ReadFromJsonAsync<PersonDto>();
-        }
-        //todo fejlsikring på response? (else)
-        
-        ReservationDto reservation = new ReservationDto(RoomState.SelectedRoom.Id, person.Id, StartDate, EndDate);
-        
-        var responseReservation = await http.PostAsJsonAsync("api/reservation", reservation);
 
-        if (responseReservation.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
         {
-            reservation = await responseReservation.Content.ReadFromJsonAsync<ReservationDto>();
-        } 
-        //todo fejlsikring på response? (else)
+            await DialogService.Alert("Personen kunne ikke oprettes. Prøv igen.", "Fejl");
+            return;
+        }
         
+            person = await response.Content.ReadFromJsonAsync<PersonDto>();
+            
+        //ReservationDto reservation = new ReservationDto(RoomState.SelectedRoom.Id, person.Id, StartDate, EndDate);
+
+        var createDto = new CreateReservationDto
+        {
+            ItemId = RoomState.SelectedRoom.Id,
+            PersonId = person.Id,
+            StartDate = StartDate,
+            EndDate = EndDate,
+            Contract = new CreateContractDto { Date = DateOnly.FromDateTime(DateTime.Today) }
+        };
+
+        var responseReservation = await http.PostAsJsonAsync("api/reservation", createDto);
+
+        if (!responseReservation.IsSuccessStatusCode)
+        {
+            // Controlleren returnerer en læsbar tekst ved 400/409, fx "Reservationen er ikke tilgængelig"
+            var message = responseReservation.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.Conflict
+                ? await responseReservation.Content.ReadAsStringAsync()
+                : "Noget gik galt. Prøv igen.";
+
+            await DialogService.Alert(message, "Reservationen kunne ikke oprettes");
+            return;
+        }
+
+        var reservation = await responseReservation.Content.ReadFromJsonAsync<ReservationDto>();
+
         DialogService.Close(reservation);
-        
     }
-    
+
 }

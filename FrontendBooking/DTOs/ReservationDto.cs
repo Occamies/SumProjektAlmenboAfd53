@@ -8,6 +8,7 @@ public class ReservationDto
     public Guid PersonId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public ContractDto? Contract { get; set; }
 
     public ReservationDto(Guid itemId, Guid personId, DateTime startDate, DateTime endDate)
     {

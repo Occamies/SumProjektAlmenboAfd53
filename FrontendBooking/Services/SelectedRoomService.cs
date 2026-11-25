@@ -22,11 +22,12 @@ public class SelectedRoomService
             return;
         }
         
-        var AllBookings = await http.GetFromJsonAsync<List<ReservationDto>>("api/reservation") ?? new List<ReservationDto>();
+        var AllBookings = await http.GetFromJsonAsync<List<ReservationDto>>
+            ("api/reservation") ?? new List<ReservationDto>();
 
         Bookings = AllBookings.Where(b => b.ItemId == SelectedRoom.Id).ToList();
         
-        OnChange?.Invoke(); // tilføjet OnChange?.Invoke();
+        OnChange?.Invoke();
     }
 
     public List<RoomDto> Rooms { get; set; } = [];
