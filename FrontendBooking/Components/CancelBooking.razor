@@ -10,12 +10,12 @@
     <RadzenText Text="@Reservation.Name" TextStyle="TextStyle.H5" />
 
     <p>Start: @Reservation.StartDate.ToString("dd-MM-yyyy HH:mm")</p>
-    <p>Slut: @Reservation.EndDate.ToString("dd-MM-yyyy HH:mm")</p>
+    <p>End: @Reservation.EndDate.ToString("dd-MM-yyyy HH:mm")</p>
 
-    <RadzenText Text="Indtast koden for at annullere bookingen" />
+    <RadzenText Text="Enter the password to cancel the booking." />
 
     <RadzenPassword @bind-Value="reservationCode"
-                    Placeholder="Kode"
+                    Placeholder="Password"
                     Style="width: 100%" />
 
     @if (errorMessage is not null)
@@ -28,12 +28,12 @@
     }
 
     <RadzenStack Orientation="Orientation.Horizontal" Gap="10px">
-        <RadzenButton Text="Annuller booking"
+        <RadzenButton Text="Cancel booking"
                       ButtonStyle="ButtonStyle.Danger"
                       Disabled="@isBusy"
                       Click="@Cancel" />
 
-        <RadzenButton Text="Luk"
+        <RadzenButton Text="Close"
                       ButtonStyle="ButtonStyle.Light"
                       Click="@(() => DialogService.Close(false))" />
     </RadzenStack>
@@ -42,26 +42,29 @@
 
 @code {
 
+    //Receives the reservation from the parent component.
     [Parameter, EditorRequired] public ReservationDto Reservation { get; set; } = default!;
 
     string reservationCode = "";
     string? errorMessage;
     bool isBusy;
 
+    //Handles the cancellation of a reservation.
     private async Task Cancel()
     {
         errorMessage = null;
 
         if (string.IsNullOrWhiteSpace(reservationCode))
         {
-            errorMessage = "Du skal indtaste en kode.";
+            errorMessage = "You need to write a password";
             return;
         }
-
+        //Indikere at en request er igang
         isBusy = true;
 
         try
         {
+            //Viser en cancelrequest til API med reservation id og kode
         var response = await http.PutAsJsonAsync(
             $"api/reservation/{Reservation.Id}/cancel", 
             new CancelReservationDto { Code = reservationCode });
@@ -71,17 +74,18 @@
                 DialogService.Close(true);
                 return;
             }
-
+            //Viser fejl besked baseret på response status kode
             errorMessage = response.StatusCode switch
             {
-                HttpStatusCode.Forbidden or HttpStatusCode.BadRequest => "Forkert kode.",
-                HttpStatusCode.NotFound => "Reservationen findes ikke længere.",
-                _ => "Noget gik galt. Prøv igen."
+                HttpStatusCode.Forbidden or HttpStatusCode.BadRequest => "Wront password",
+                HttpStatusCode.NotFound => "The reservations isint found",
+                _ => "Something went wrong."
             };
         }
+        //Hvis api ikke kan kontakte server
         catch (HttpRequestException)
         {
-            errorMessage = "Kunne ikke kontakte serveren.";
+            errorMessage = "No server contact.";
         }
         finally
         {

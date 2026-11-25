@@ -4,6 +4,8 @@
 @inject HttpClient http
 @inject SelectedRoomService RoomState
 
+
+@*radzen komponeter*@
 <RadzenCard>
     <RadzenText TextStyle="TextStyle.H5" Style="margin-bottom: 15px">@RoomState.SelectedRoom?.Name</RadzenText>
 
@@ -18,6 +20,7 @@
 @code {
     private List<ItemDto> inventory = [];
     
+    //Henter data fra api til inventory
     protected override async Task OnInitializedAsync()
     {
         inventory = await http.GetFromJsonAsync<List<ItemDto>>("api/room/" + RoomState.SelectedRoom?.Id + "/inventory") ?? new List<ItemDto>();

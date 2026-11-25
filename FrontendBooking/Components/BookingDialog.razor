@@ -18,37 +18,17 @@
         <RadzenText Text="Bookingperiode"
                     TextStyle="TextStyle.H5"/>
 
-        <b>Valgt dato</b>
+        <b>Choosen date</b>
         <p>Startdato: @StartDate.ToString("dd-MM-yyyy") kl. 12.00</p>
-        <p>Slutdato: @EndDate.ToString("dd-MM-yyyy") kl. 11.00</p>
+        <p>Enddato: @EndDate.ToString("dd-MM-yyyy") kl. 11.00</p>
 
         <RadzenStack Gap="5px" Orientation="Orientation.Horizontal">
-            <RadzenLabel Text="Antal dage"/>
+            <RadzenLabel Text="Amount of days"/>
             <RadzenNumeric @bind-Value="@numberOfDays"
                            Min="1"
                            Max="7"
                            Style="min-width: 20%"/>
         </RadzenStack>
-
-        @* Vis det valgte ekstra equipment *@
-        @if (selectedEquipment.Any(x => x.Count > 0))
-        {
-            <div>
-                <b>Valgt ekstra equipment:</b>
-                @foreach (var item in selectedEquipment.Where(x => x.Count > 0))
-                {
-                    <RadzenStack Orientation="Orientation.Horizontal">
-                        <p>@item.Name: @item.Count stk.</p>
-
-                        @if (item.Depositum > 0)
-                        {
-                            <p>Depositum: @(item.Depositum * item.Count) kr.</p>
-                        }
-                    </RadzenStack>
-                }
-            </div>
-        }
-
     </RadzenStack>
 
     @* Personoplysninger *@
@@ -76,8 +56,8 @@
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="8px">
             <RadzenCheckBox @bind-Value="acceptedTerms" TValue="bool" Name="acceptTerms"/>
             <span>
-                Jeg accepterer
-                <a href="#" @onclick="OpenContractDialog" @onclick:preventDefault="true">regler og vilkår</a>
+                Accept
+                <a href="#" @onclick="OpenContractDialog" @onclick:preventDefault="true">Terms and conditions</a>
             </span>
         </RadzenStack>
 
@@ -93,21 +73,22 @@
 
 @code {
 
+    //Modtager startdatoen og det valgte fællesrum fra den overordnede komponent.
     [Parameter] public DateTime StartDate { get; set; }
     [Parameter] public RoomDto? SelectedRoom { get; set; }
 
     int numberOfDays = 1;
 
+    //Oplysninger om personen, der foretager bookingen.
     string fullName = "";
     string email = "";
     string phone = "";
     string address = "";
+
+    //Tjekker om brugeren har accepteret betingelserne
     bool acceptedTerms;
 
     DateTime EndDate => StartDate.Date.AddDays(numberOfDays).AddHours(11);
-
-    // Liste med det valgte equipment
-    List<EkstraEquipmentDialog.EquipmentItem> selectedEquipment = new();
 
     // åbner ContractDialog, til at se regler og vilkår
     private async Task OpenContractDialog()
@@ -121,24 +102,7 @@
             });
     }
 
-    // Åbner modalvinduet med ekstra equipment
-    private async Task OpenEquipmentDialog()
-    {
-        var result = await DialogService.OpenAsync<EkstraEquipmentDialog>(
-            "Ekstra equipment",
-            null,
-            new DialogOptions
-            {
-                Width = "min(650px, 95vw)",
-                CloseDialogOnOverlayClick = false
-            });
-
-        if (result is List<EkstraEquipmentDialog.EquipmentItem> equipment)
-        {
-            selectedEquipment = equipment;
-        }
-    }
-
+    //Kontrollerer oplysningerne og opretter en booking.
     async void Submit()
     {
         if (string.IsNullOrWhiteSpace(fullName) ||
@@ -152,6 +116,7 @@
         if (!acceptedTerms)
             return;
 
+        //Opretter en person med de indtastede oplysninger.
         PersonDto person = new PersonDto(fullName, email, address, phone);
 
         var response = await http.PostAsJsonAsync("api/person", person);
@@ -162,11 +127,10 @@
             await DialogService.Alert("Personen kunne ikke oprettes. Prøv igen.", "Fejl");
             return;
         }
-        
-            person = await response.Content.ReadFromJsonAsync<PersonDto>();
-            
-        //ReservationDto reservation = new ReservationDto(RoomState.SelectedRoom.Id, person.Id, StartDate, EndDate);
 
+        person = await response.Content.ReadFromJsonAsync<PersonDto>();
+
+        // Opretter en DTO med oplysningerne til den nye reservation.
         var createDto = new CreateReservationDto
         {
             ItemId = RoomState.SelectedRoom.Id,

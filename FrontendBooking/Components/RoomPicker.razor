@@ -3,6 +3,8 @@
 @inject SelectedRoomService RoomState
 @inject HttpClient http
 
+
+@*viser de forskellige rum*@
 <div class="room-grid">
     @foreach (var room in RoomState.Rooms)
     {
@@ -23,8 +25,9 @@
 </style>
 
 @code {
+    //Sender til valgte rum til parent komponent
     [Parameter] public EventCallback<string> OnRoomSelected { get; set; }
-
+    //vælger rum
     private async Task Select(RoomDto room)
     {
         RoomState.SelectRoom(room);

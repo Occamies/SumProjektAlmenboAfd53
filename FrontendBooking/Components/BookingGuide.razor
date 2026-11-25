@@ -1,10 +1,9 @@
 ﻿<div class="guide">
 
     <RadzenCard class="guide-card">
-        <RadzenText TextStyle="TextStyle.H5" class="guide-title">Sådan booker du et fællesrum</RadzenText>
+        <RadzenText TextStyle="TextStyle.H5" class="guide-title">How to book the common room</RadzenText>
         <p class="guide-intro">
-            Her kan du læse, hvordan du booker et af boligforeningens fællesrum – fra du vælger tidspunkt,
-            til du afleverer rummet igen. Følg trinene i rækkefølge.
+            You can read, how to book the common room, from start to finish. Just follow the steps.
         </p>
 
         <ol class="steps">
@@ -19,7 +18,7 @@
     </RadzenCard>
 
     <RadzenCard class="guide-card">
-        <RadzenText TextStyle="TextStyle.H6" class="guide-title">Godt at vide</RadzenText>
+        <RadzenText TextStyle="TextStyle.H6" class="guide-title">Nice to know</RadzenText>
         <ul class="tips">
             @foreach (var tip in tips)
             {
@@ -29,9 +28,9 @@
     </RadzenCard>
 
     <RadzenCard class="guide-card contact-card">
-        <RadzenText TextStyle="TextStyle.H6" class="guide-title">Har du spørgsmål?</RadzenText>
+        <RadzenText TextStyle="TextStyle.H6" class="guide-title">Questions?</RadzenText>
         <p>
-            Kan du ikke finde svar her, er du velkommen til at kontakte bestyrelsen på
+            If you cant find the answers you were looking for you can contact the board.
             <a href="mailto:post@almenbo-aarhus.dk">post@almenbo-aarhus.dk</a>
         </p>
     </RadzenCard>
@@ -111,29 +110,35 @@
 @code {
     private List<GuideStep> steps = new()
     {
-        new("Vælg din bygning",
-            "Bor du i en anden bygning end den, der vises, kan du skifte under \"Change Building\" i menuen til venstre."),
-        new("Find det rette fællesrum",
-            "Under \"Room Information\" kan du se, hvilke fællesrum der findes, og hvad de indeholder af borde, stole, bestik og spil."),
-        new("Vælg dato og tidspunkt",
-            "Gå til \"Common Room\" og find den dag, du ønsker at booke, i kalenderen. Klik på et ledigt tidspunkt for at starte din booking."),
-        new("Udfyld bookingen",
-            "Der åbner et vindue, hvor du udfylder oplysningerne om din booking. Tjek, at dato og tidspunkt er korrekte."),
-        new("Tilføj ekstra udstyr (valgfrit)",
-            "Har du brug for f.eks. grill eller projektor, kan du tilføje det til din booking. Vælg antal og skriv evt. en kommentar. Se priser og depositum under \"Extra Equipment\"."),
-        new("Godkend kontrakten",
-            "Læs lejekontrakten og husets regler igennem, og godkend dem digitalt. Bookingen er først gennemført, når kontrakten er godkendt."),
-        new("Modtag din adgangskode",
-            "Når bookingen er bekræftet, får du en kode til døren. Koden virker kun i det tidsrum, du har booket."),
-        new("Ryd op efter dig",
-            "Når du er færdig, skal rummet gøres rent efter reglerne under \"Rules\". Husk at lukke vinduer og aflevere eventuelle lånte nøgler.")
-    };
+        new("Select your building",
+            "If you live in a different building than the one displayed, you can change it under \"Change Building\" in the menu on the left."),
+
+        new("Find the right common room",
+            "Under \"Room Information\", you can see which common rooms are available and what they contain, including tables, chairs, cutlery and games."),
+
+        new("Select a date and time",
+            "Go to \"Common Room\" and find the day you want to book in the calendar. Click on an available time slot to start your booking."),
+
+        new("Complete your booking",
+            "A window will open where you can enter your booking details. Make sure the date and time are correct."),
+
+        new("Add extra equipment (optional)",
+            "If you need equipment such as a barbecue or projector, you can add it to your booking. Select the quantity and add a comment if needed. See prices and deposit information under \"Extra Equipment\"."),
+
+        new("Accept the contract",
+            "Read through the rental contract and the common room rules, then accept them digitally. Your booking is only completed once the contract has been accepted."),
+
+        new("Receive your access code",
+            "Once your booking is confirmed, you will receive an access code for the door. The code will only work during your booked time slot."),
+
+        new("Clean up after yourself",
+            "When you are finished, you must clean the room according to the guidelines under \"Rules\". Remember to close the windows and return any borrowed keys.")};
 
     private List<string> tips = new()
     {
-        "Book i god tid – populære dage som weekender og helligdage bliver hurtigt optaget.",
-        "Depositum for ekstra udstyr betales tilbage, når udstyret er afleveret i god stand.",
-        "Ødelagt inventar eller udstyr skal meldes til bestyrelsen med det samme."
+        "Book in advance – popular days such as weekends and public holidays fill up quickly.",
+        "Deposits for extra equipment will be refunded once the equipment has been returned in good condition.",
+        "Any damaged furniture or equipment must be reported to the board immediately."
     };
 
     private record GuideStep(string Title, string Text);

@@ -7,9 +7,10 @@
 @inject HttpClient http
 @implements IDisposable
 
-<h1>Lokale @RoomState.SelectedRoom?.Name</h1>
+<h1>Common room: @RoomState.SelectedRoom?.Name</h1>
 
 
+@*Radzen kalender med reservationerne*@
 <RadzenScheduler TItem="ReservationDto"
                  Data="@Bookings"
                  StartProperty="@nameof(ReservationDto.StartDate)"
@@ -30,32 +31,33 @@
 @code {
     DateTime selectedDate = DateTime.Today;
 
+    //Valgte reservation
     ReservationDto? selectedBooking;
     
-
-    // Eksempelbookinger i kalenderen
+    //liste med bookinger til kalenderen
     List<ReservationDto> Bookings { get; set; } = [];
 
-    // Når brugeren vælger en dato i kalenderen
+    //Når brugeren vælger en dato i kalenderen
     public async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
     {
         await OpenBookingDialog(args.Start.Date);
     }
 
-    // Når brugeren klikker på en eksisterende booking
+    //Når brugeren klikker på en eksisterende booking
     public async Task OnAppointmentSelect(
         SchedulerAppointmentSelectEventArgs<ReservationDto> args)
     {
         await OpenCancelDialog(args.Data);
     }
 
+    //Åbner CancelDialog til at fjerne en reservation
     public async Task OpenCancelDialog(ReservationDto reservation)
     {
         var result = await DialogService.OpenAsync<CancelBooking>(
-            "Annuller booking",
+            "Cancel Booking",
             new Dictionary<string, object?>
             {
-                { "Reservation", reservation }
+                { "Booking", reservation }
             },
             new DialogOptions
             {
@@ -70,21 +72,21 @@
         }
     }
 
-    // Åbner bookingdialogen
+    //Åbner bookingdialogen
     public async Task OpenBookingDialog(DateTime date)
     {
         
         if (RoomState.SelectedRoom == null)
         {
             await DialogService.Alert(
-                "Du skal vælge et lokale først.",
-                "Intet lokale valgt");
+                "You need to choose a room first",
+                "No room chosen");
 
             return;
         }
         
         var result = await DialogService.OpenAsync<BookingDialog>(
-            "Book fællesrum",
+            "Book common room",
             new Dictionary<string, object?>
             {
                 { "StartDate", date },
@@ -103,8 +105,8 @@
             if (!IsDateAvailable(bookingData.StartDate, bookingData.EndDate))
             {
                 await DialogService.Alert(
-                    "Vælg venligst en anden dato.",
-                    "Datoen er ikke ledig");
+                    "Please choose another date",
+                    "Date is not available");
 
                 return;
             }
@@ -116,7 +118,8 @@
             Bookings = Bookings.ToList();
         }
     }
-
+    
+    //tjekker om dato er tilrådighed
     private bool IsDateAvailable(DateTime start, DateTime end)
     {
         if (start.Date < DateTime.Today)
@@ -129,6 +132,7 @@
             end > booking.StartDate);
     }
     
+    //Initialiserer komponenten og henter reservationerne for det valgte fællesrum.
     protected override async Task OnInitializedAsync()
     {
         RoomState.OnChange += UpdateBookings;
@@ -143,6 +147,7 @@
         InvokeAsync(StateHasChanged);
     }
     
+    //Fjerner abonnementet på OnChange, når komponenten lukkes.
     public void Dispose()
     {
         RoomState.OnChange -= UpdateBookings;

@@ -25,6 +25,7 @@
 @code {
     private List<ExtraEquipmentDto> storageItems = [];
 
+    //henter data til ekstra equipment
     protected override async Task OnInitializedAsync()
     {
         var equipment = await http.GetFromJsonAsync<List<ExtraEquipmentDto>>("api/extraequipment") ?? new List<ExtraEquipmentDto>();
