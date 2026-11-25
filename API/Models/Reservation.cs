@@ -48,12 +48,10 @@ public class Reservation
 
     public bool CancelReservation(string code)
     {
-        if (code == this.Code)
-        {
-            this.Cancelled = true;
-            Item.Reservations.Remove(this);
-            return true;
-        }
-        throw new ArgumentException("Forkert kodeord");
+        if (code != Code)
+            throw new ArgumentException("Forkert kodeord");
+
+        Cancelled = true;
+        return true;
     }
 }

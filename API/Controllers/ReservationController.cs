@@ -23,6 +23,7 @@ public class ReservationController : ControllerBase
     public async Task<IActionResult> GetAllReservations()
     {
         var reservations = await _context.Reservations
+            .Where(r => !r.Cancelled)
             .Select(r => new ReservationDto
             {
                 Id = r.Id,
@@ -41,7 +42,7 @@ public class ReservationController : ControllerBase
     public async Task<IActionResult> GetReservationById(Guid id)
     {
         var reservation = await _context.Reservations
-            .Where(r => r.Id == id)
+            .Where(r => r.Id == id && !r.Cancelled)
             .Select(r => new ReservationDto
             {
                 Id = r.Id,
@@ -129,9 +130,7 @@ public class ReservationController : ControllerBase
         Guid id, CancelReservationDto dto)
     {
         var reservation = await _context.Reservations
-            .Include(r => r.Item)
-                .ThenInclude(i => i.Reservations)
-            .FirstOrDefaultAsync(r => r.Id == id);
+            .FirstOrDefaultAsync(r => r.Id == id && !r.Cancelled);
 
         if (reservation == null)
             return NotFound();

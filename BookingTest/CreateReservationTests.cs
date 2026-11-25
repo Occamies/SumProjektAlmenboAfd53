@@ -64,7 +64,7 @@ public class CreateReservationTests
     
     //Test for at sikre der ikke kan opstå dobbelt booking
     [Fact]
-    public void DobbeltBookingQuestionMarkQuestionMarkQuestionMarkQuestionMarkTest()
+    public void DobbeltBookingTest()
     {
         var sut = new Item("testName", "testLocation");
         

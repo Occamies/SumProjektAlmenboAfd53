@@ -18,12 +18,10 @@ public class CancelReservationTests
         
         item.CreateReservation(startDate, endDate, testPerson);
         var sut = item.LastReservation();
-        var reservationCount = item.Reservations.Count;
 
         var result = sut.CancelReservation("1234");
 
         Assert.True(result);
-        Assert.Equal(reservationCount -1, item.Reservations.Count);
     }
     
     // Tjekker om kodeord er forkert Test

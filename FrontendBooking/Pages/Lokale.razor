@@ -43,10 +43,31 @@
     }
 
     // Når brugeren klikker på en eksisterende booking
-    public void OnAppointmentSelect(
+    public async Task OnAppointmentSelect(
         SchedulerAppointmentSelectEventArgs<ReservationDto> args)
     {
-        selectedBooking = args.Data;
+        await OpenCancelDialog(args.Data);
+    }
+
+    public async Task OpenCancelDialog(ReservationDto reservation)
+    {
+        var result = await DialogService.OpenAsync<CancelBooking>(
+            "Annuller booking",
+            new Dictionary<string, object?>
+            {
+                { "Reservation", reservation }
+            },
+            new DialogOptions
+            {
+                Width = "min(90vw, 450px)",
+                CloseDialogOnOverlayClick = false
+            });
+
+        if (result is true)
+        {
+            await RoomState.LoadReservationsByRoom(http);
+            Bookings = RoomState.Bookings;
+        }
     }
 
     // Åbner bookingdialogen
