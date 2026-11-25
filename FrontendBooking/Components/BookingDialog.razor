@@ -30,11 +30,6 @@
                            Style="min-width: 20%"/>
         </RadzenStack>
 
-        <RadzenButton Text="Ekstra equipment"
-                      Icon="add"
-                      ButtonStyle="ButtonStyle.Secondary"
-                      Click="@OpenEquipmentDialog"/>
-
         @* Vis det valgte ekstra equipment *@
         @if (selectedEquipment.Any(x => x.Count > 0))
         {

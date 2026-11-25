@@ -1,32 +1,27 @@
-﻿<RadzenCard>
-    <RadzenText TextStyle="TextStyle.H5" Style="margin-bottom: 15px">Fællesrum</RadzenText>
+﻿@using API.DTOs
+@using API.DTOs.Item
+@using FrontendBooking.Services
+@inject HttpClient http
+@inject SelectedRoomService RoomState
 
-    <RadzenDataGrid Data="@commonRooms" TItem="CommonRoomItem">
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.H5" Style="margin-bottom: 15px">@RoomState.SelectedRoom?.Name</RadzenText>
+
+    <RadzenDataGrid Data="@inventory" TItem="ItemDto">
         <Columns>
-            <RadzenDataGridColumn TItem="CommonRoomItem" Property="Name" Title="Fællesrum" />
-            <RadzenDataGridColumn TItem="CommonRoomItem" Property="Tables" Title="Borde" />
-            <RadzenDataGridColumn TItem="CommonRoomItem" Property="Chairs" Title="Stole" />
-            <RadzenDataGridColumn TItem="CommonRoomItem" Property="Cutlery" Title="Bestik" />
-            <RadzenDataGridColumn TItem="CommonRoomItem" Property="Games" Title="Spil" />
+            <RadzenDataGridColumn TItem="ItemDto" Property="Name" Title="Navn" />
+            <RadzenDataGridColumn TItem="ItemDto" Property="Location" Title="Lokation" />
         </Columns>
     </RadzenDataGrid>
 </RadzenCard>
 
 @code {
-    private List<CommonRoomItem> commonRooms = new()
+    private List<ItemDto> inventory = [];
+    
+    protected override async Task OnInitializedAsync()
     {
-        new() { Name = "1E", Tables = 2, Chairs = 10, Cutlery = 10, Games = 2 },
-        new() { Name = "1F", Tables = 2, Chairs = 10, Cutlery = 10, Games = 2 },
-        new() { Name = "1G", Tables = 2, Chairs = 10, Cutlery = 10, Games = 2 },
-        new() { Name = "1H", Tables = 2, Chairs = 10, Cutlery = 10, Games = 2 }
-    };
+        inventory = await http.GetFromJsonAsync<List<ItemDto>>("api/room/" + RoomState.SelectedRoom?.Id + "/inventory") ?? new List<ItemDto>();
 
-    public class CommonRoomItem
-    {
-        public string Name { get; set; } = "";
-        public int Tables { get; set; }
-        public int Chairs { get; set; }
-        public int Cutlery { get; set; }
-        public int Games { get; set; }
     }
+
 }
