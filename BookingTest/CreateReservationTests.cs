@@ -102,8 +102,7 @@ public class CreateReservationTests
     {
         var sut = new Item("testName", "testLocation");
         
-        var startDate = DateTime.Now;
-        var endDate = startDate.AddDays(1);
+        var endDate = DateTime.Now.AddDays(1);
         var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
 
         

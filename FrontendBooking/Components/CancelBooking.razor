@@ -1,0 +1,91 @@
+﻿@using System.Net
+@using API.DTOs
+@using Radzen
+@using Radzen.Blazor
+@inject DialogService DialogService
+@inject HttpClient http
+
+<RadzenStack Gap="15px">
+
+    <RadzenText Text="@Reservation.Name" TextStyle="TextStyle.H5" />
+
+    <p>Start: @Reservation.StartDate.ToString("dd-MM-yyyy HH:mm")</p>
+    <p>Slut: @Reservation.EndDate.ToString("dd-MM-yyyy HH:mm")</p>
+
+    <RadzenText Text="Indtast koden for at annullere bookingen" />
+
+    <RadzenPassword @bind-Value="reservationCode"
+                    Placeholder="Kode"
+                    Style="width: 100%" />
+
+    @if (errorMessage is not null)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger"
+                     AllowClose="false"
+                     ShowIcon="false">
+            @errorMessage
+        </RadzenAlert>
+    }
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="10px">
+        <RadzenButton Text="Annuller booking"
+                      ButtonStyle="ButtonStyle.Danger"
+                      Disabled="@isBusy"
+                      Click="@Cancel" />
+
+        <RadzenButton Text="Luk"
+                      ButtonStyle="ButtonStyle.Light"
+                      Click="@(() => DialogService.Close(false))" />
+    </RadzenStack>
+
+</RadzenStack>
+
+@code {
+
+    [Parameter, EditorRequired] public ReservationDto Reservation { get; set; } = default!;
+
+    string reservationCode = "";
+    string? errorMessage;
+    bool isBusy;
+
+    private async Task Cancel()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(reservationCode))
+        {
+            errorMessage = "Du skal indtaste en kode.";
+            return;
+        }
+
+        isBusy = true;
+
+        try
+        {
+        var response = await http.PutAsJsonAsync(
+            $"api/reservation/{Reservation.Id}/cancel", 
+            new CancelReservationDto { Code = reservationCode });
+
+            if (response.IsSuccessStatusCode)
+            {
+                DialogService.Close(true);
+                return;
+            }
+
+            errorMessage = response.StatusCode switch
+            {
+                HttpStatusCode.Forbidden or HttpStatusCode.BadRequest => "Forkert kode.",
+                HttpStatusCode.NotFound => "Reservationen findes ikke længere.",
+                _ => "Noget gik galt. Prøv igen."
+            };
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Kunne ikke kontakte serveren.";
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+}
