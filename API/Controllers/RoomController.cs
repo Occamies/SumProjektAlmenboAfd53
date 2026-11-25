@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using API.Models;
 using API.DTOs;
 using API.Contexts;
+using API.DTOs.Item;
 
 namespace API.Controllers;
 
@@ -51,6 +52,25 @@ public class RoomController : ControllerBase
             room);
     }
     
+    // Add to Inventory
+    [HttpPost("{id:guid}/inventory")]
+    public async Task<IActionResult> AddToInventory(Guid id, CreateItemDto dto)
+    {
+        var item = new Item(dto.Name, dto.Location);
+
+        var room = await _context.Rooms.FindAsync(id);
+        
+        _context.Items.Add(item);
+        room.AddToInventory(item);
+        
+        await _context.SaveChangesAsync();
+        
+        return CreatedAtAction(
+            nameof(AddToInventory),
+            new { id = item.Id },
+            item);
+    }
+    
     // Get by Id
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetRoomById(Guid id)
@@ -70,6 +90,32 @@ public class RoomController : ControllerBase
         };
 
         return Ok(roomDto);
+    }
+    
+    // Get inventory of room by Id
+    [HttpGet("{id:guid}/inventory")]
+    public async Task<IActionResult> GetRoomInventoryById(Guid id)
+    {
+        var room = await _context.Rooms.Include(r => r.Inventory).FirstOrDefaultAsync(r => r.Id == id);
+
+        if (room == null)
+        {
+            return NotFound();
+        }
+
+        List<ItemDto> inventory = [];
+
+        foreach (var item in room.Inventory)
+        {
+            inventory.Add(new ItemDto()
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Location = item.Location
+            });
+        }
+
+        return Ok(inventory);
     }
     
     [HttpPut("{id:guid}")]
