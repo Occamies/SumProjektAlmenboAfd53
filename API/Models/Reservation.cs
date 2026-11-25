@@ -48,8 +48,20 @@ public class Reservation
 
     public bool CancelReservation(string code)
     {
+        if (Cancelled)
+        {
+            throw new ArgumentException("Reservationen er allerede aflyst");
+        }
+
+        if (code == null)
+        {
+            throw new ArgumentException("Indtast kode");
+        }
+        
         if (code != Code)
+        {
             throw new ArgumentException("Forkert kodeord");
+        }
 
         Cancelled = true;
         return true;
