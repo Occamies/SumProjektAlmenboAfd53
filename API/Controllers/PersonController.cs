@@ -10,7 +10,7 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class PersonController : ControllerBase
 {
-    // Gemm en reference til vores EF Core DbContext.
+    // Gem en reference til vores EF Core DbContext.
     // readonly betyder, at feltet ikke kan tildeles en ny værdi efter initialisering.
     private readonly BookingContext _context;
 
