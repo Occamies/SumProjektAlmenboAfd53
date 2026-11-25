@@ -5,6 +5,7 @@ namespace API.Contexts;
 
 public class BookingContext : DbContext
 {
+    //Brugt til at oprette migration så vi kan arbejde med databasen i C#
     public BookingContext(DbContextOptions<BookingContext> options) : base(options){}
     
     public DbSet<Contract> Contracts => Set<Contract>();

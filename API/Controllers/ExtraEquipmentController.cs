@@ -12,13 +12,17 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ExtraEquipmentController : ControllerBase
 {
+    // Gemm en reference til vores EF Core DbContext.
+    // readonly betyder, at feltet ikke kan tildeles en ny værdi efter initialisering.
     private readonly BookingContext _context;
     
+    // ASP.NET Core leverer automatisk BookingContext gennem Dependency Injection.
     public ExtraEquipmentController(BookingContext context)
     {
         _context = context;
     }
 
+    // Hent alle extra equipment
     [HttpGet]
     public async Task<IActionResult> GetAllExtraEquipment()
     {
@@ -27,6 +31,7 @@ public class ExtraEquipmentController : ControllerBase
         return Ok(equipment);
     }
     
+    // Hent extra equipment ud fra Id
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetExtraEquipmentById(Guid id)
     {
@@ -40,6 +45,7 @@ public class ExtraEquipmentController : ControllerBase
         return Ok(equipment);
     }
     
+    //Opret extra equipment
     [HttpPost]
     public async Task<IActionResult> CreateExtraEquipment(
         CreateExtraEquipmentDto dto)
@@ -61,6 +67,7 @@ public class ExtraEquipmentController : ControllerBase
             equipment);
     }
 
+    // Opdater extra equipment
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateExtraEquipment(
         Guid id,
@@ -80,6 +87,7 @@ public class ExtraEquipmentController : ControllerBase
         return NoContent();
     }
     
+    // Slet extra equipment
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteExtraEquipment(Guid id)
     {

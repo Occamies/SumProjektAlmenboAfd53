@@ -12,10 +12,11 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class RoomController : ControllerBase
 {
-    // Reference tol EF Core DbContext.
-    private readonly BookingContext _context;
-
-    // Dependency Injection -> ASP.NET Core leverer automatisk BookingContext.
+    // Gemm en reference til vores EF Core DbContext.
+    // readonly betyder, at feltet ikke kan tildeles en ny værdi efter initialisering.
+    private readonly BookingContext _context; 
+    
+    // ASP.NET Core leverer automatisk BookingContext gennem Dependency Injection.
     public RoomController(BookingContext context)
     {
         _context = context;
@@ -37,6 +38,7 @@ public class RoomController : ControllerBase
         return Ok(rooms);
     }
     
+    // Opret room
     [HttpPost]
     public async Task<IActionResult> CreateRoom(CreateRoomDto dto)
     {
@@ -52,7 +54,7 @@ public class RoomController : ControllerBase
             room);
     }
     
-    // Add to Inventory
+    // Tilføj til rooms inventory
     [HttpPost("{id:guid}/inventory")]
     public async Task<IActionResult> AddToInventory(Guid id, CreateItemDto dto)
     {
@@ -71,7 +73,7 @@ public class RoomController : ControllerBase
             item);
     }
     
-    // Get by Id
+    // Hent room ud fra Id
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetRoomById(Guid id)
     {
@@ -92,7 +94,7 @@ public class RoomController : ControllerBase
         return Ok(roomDto);
     }
     
-    // Get inventory of room by Id
+    // Hent et specifikt rooms inventory
     [HttpGet("{id:guid}/inventory")]
     public async Task<IActionResult> GetRoomInventoryById(Guid id)
     {
@@ -118,6 +120,7 @@ public class RoomController : ControllerBase
         return Ok(inventory);
     }
     
+    // Opdatere room
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateRoom(
         Guid id,
@@ -138,7 +141,7 @@ public class RoomController : ControllerBase
         return NoContent();
     }
     
-    // Delete
+    // Slet room
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteRoom(Guid id)
     {

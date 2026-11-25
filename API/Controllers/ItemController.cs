@@ -11,14 +11,17 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ItemController : ControllerBase
 {
+    // Gemm en reference til vores EF Core DbContext.
+    // readonly betyder, at feltet ikke kan tildeles en ny værdi efter initialisering.
     private readonly BookingContext _context;
     
+    // ASP.NET Core leverer automatisk BookingContext gennem Dependency Injection.
     public ItemController(BookingContext context)
     {
         _context = context;
     }
     
-    // Hent alle 
+    // Hent alle items
     [HttpGet]
     public async Task<ActionResult<List<ItemDto>>> GetAll()
     {
@@ -52,7 +55,7 @@ public class ItemController : ControllerBase
     }
 
 
-    // Create
+    // Opret item
     [HttpPost]
     public async Task<ActionResult<ItemDto>> Create(
         CreateItemDto dto)
@@ -75,7 +78,7 @@ public class ItemController : ControllerBase
             result);
     }
     
-    // Opdaterer 
+    // Opdaterer item
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(
         Guid id, UpdateItemDto dto)
@@ -92,7 +95,7 @@ public class ItemController : ControllerBase
         return NoContent();
     }
 
-    // Delete
+    // Slet item
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
