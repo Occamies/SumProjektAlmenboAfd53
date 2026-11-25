@@ -141,6 +141,12 @@ namespace API.Migrations
                 {
                     b.HasBaseType("API.Models.Item");
 
+                    b.Property<double>("Deposit")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.HasDiscriminator().HasValue("ExtraEquipment");
                 });
 

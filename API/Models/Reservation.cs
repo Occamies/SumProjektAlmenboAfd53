@@ -16,7 +16,7 @@ public class Reservation
     public Guid ItemId { get; set; }
     public Item Item  { get; set; }
     
-    //public int ContractId { get; set; }
+    public Guid? ContractId { get; set; }
     public Contract? Contract { get; set; }
     
     public Guid PersonId { get; set; }
@@ -48,12 +48,32 @@ public class Reservation
 
     public bool CancelReservation(string code)
     {
-        if (code == this.Code)
+        if (Cancelled)
         {
-            this.Cancelled = true;
-            Item.Reservations.Remove(this);
-            return true;
+            throw new ArgumentException("Reservationen er allerede aflyst");
         }
-        throw new ArgumentException("Forkert kodeord");
+
+        if (code == null)
+        {
+            throw new ArgumentException("Indtast kode");
+        }
+        
+        if (code != Code)
+        {
+            throw new ArgumentException("Forkert kodeord");
+        }
+
+        Cancelled = true;
+        return true;
+    }
+    
+    public void AttachContract(Contract contract)
+    {
+        ArgumentNullException.ThrowIfNull(contract);
+
+        if (Contract is not null)
+            throw new InvalidOperationException("Reservationen har allerede en kontrakt");
+
+        Contract = contract;
     }
 }

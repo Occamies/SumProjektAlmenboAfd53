@@ -20,7 +20,7 @@ var api = builder.AddProject<Projects.API>("api")
     .WaitForCompletion(migrations);
 
 // Blazor frontend
-builder.AddProject<Projects.BlazorFrontend>("frontend")
+builder.AddProject<Projects.FrontendBooking>("frontend")
     .WithReference(api);
 
 builder.Build().Run();

@@ -1,0 +1,27 @@
+﻿@using API.DTOs
+@using API.DTOs.Item
+@using FrontendBooking.Services
+@inject HttpClient http
+@inject SelectedRoomService RoomState
+
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.H5" Style="margin-bottom: 15px">@RoomState.SelectedRoom?.Name</RadzenText>
+
+    <RadzenDataGrid Data="@inventory" TItem="ItemDto">
+        <Columns>
+            <RadzenDataGridColumn TItem="ItemDto" Property="Name" Title="Navn" />
+            <RadzenDataGridColumn TItem="ItemDto" Property="Location" Title="Lokation" />
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
+
+@code {
+    private List<ItemDto> inventory = [];
+    
+    protected override async Task OnInitializedAsync()
+    {
+        inventory = await http.GetFromJsonAsync<List<ItemDto>>("api/room/" + RoomState.SelectedRoom?.Id + "/inventory") ?? new List<ItemDto>();
+
+    }
+
+}

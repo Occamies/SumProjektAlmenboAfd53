@@ -1,0 +1,20 @@
+﻿namespace API.DTOs;
+
+public class ReservationDto
+{
+    public string Name { get; set; } = "Reserveret";
+    public Guid Id { get; set; }
+    public Guid ItemId { get; set; }
+    public Guid PersonId { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public ContractDto? Contract { get; set; }
+
+    public ReservationDto(Guid itemId, Guid personId, DateTime startDate, DateTime endDate)
+    {
+        ItemId = itemId;
+        PersonId = personId;
+        StartDate = startDate;
+        EndDate = endDate;
+    }
+}

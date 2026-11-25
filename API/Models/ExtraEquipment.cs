@@ -2,8 +2,8 @@
 
 public class ExtraEquipment : Item
 {
-    private double Deposit { get; set; }
-    private DepositState Status { get; set; }
+    public double Deposit { get; set; }
+    public DepositState Status { get; set; }
 
     public ExtraEquipment(string name, string location, double deposit) : base(name, location)
     {

@@ -1,0 +1,35 @@
+﻿@using API.DTOs
+@using FrontendBooking.Services
+@inject HttpClient http
+@inject SelectedRoomService RoomState
+
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="40px">
+
+    <!-- Menu 1: Depotrum -->
+    <RadzenCard>
+        <RadzenText TextStyle="TextStyle.H5" Style="margin-bottom: 15px">Depotrum</RadzenText>
+
+        <RadzenDataGrid Data="@storageItems" TItem="ExtraEquipmentDto">
+            <Columns>
+                <RadzenDataGridColumn TItem="ExtraEquipmentDto" Property="Name" Title="Udstyr" />
+                <RadzenDataGridColumn TItem="ExtraEquipmentDto" Property="Deposit" Title="Depositum">
+                    <Template Context="item">@item.Deposit kr.</Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenCard>
+
+</RadzenStack>
+
+@code {
+    private List<ExtraEquipmentDto> storageItems = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var equipment = await http.GetFromJsonAsync<List<ExtraEquipmentDto>>("api/extraequipment") ?? new List<ExtraEquipmentDto>();
+
+        storageItems = equipment.Where(b => b.Location == "Depot").ToList();
+
+    }
+}

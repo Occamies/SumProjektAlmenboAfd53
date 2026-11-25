@@ -14,16 +14,14 @@ public class CancelReservationTests
 
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         
         item.CreateReservation(startDate, endDate, testPerson);
         var sut = item.LastReservation();
-        var reservationCount = item.Reservations.Count;
 
         var result = sut.CancelReservation("1234");
 
         Assert.True(result);
-        Assert.Equal(reservationCount -1, item.Reservations.Count);
     }
     
     // Tjekker om kodeord er forkert Test
@@ -34,15 +32,50 @@ public class CancelReservationTests
 
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         
         item.CreateReservation(startDate, endDate, testPerson);
         var sut = item.LastReservation();
-        var reservationCount = item.Reservations.Count;
         
-        var exeption = Assert.Throws<ArgumentException>(() => sut.CancelReservation("000000000000"));
+        var exeption = Assert.Throws<ArgumentException>(() => sut.CancelReservation("0000"));
 
         Assert.Equal("Forkert kodeord", exeption.Message);
-        Assert.Equal(reservationCount, item.Reservations.Count);
     }
+    
+    // Tjekker om kodeord er null
+    [Fact]
+    public void NullPassWordTest()
+    {
+        var item = new Item("testName", "testLocation");
+
+        var startDate = DateTime.Now;
+        var endDate = startDate.AddDays(1);
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
+        
+        item.CreateReservation(startDate, endDate, testPerson);
+        var sut = item.LastReservation();
+        
+        var exeption = Assert.Throws<ArgumentException>(() => sut.CancelReservation(null));
+
+        Assert.Equal("Indtast kode", exeption.Message);
+    }
+    
+    // Tjekker om kodeord er null
+    [Fact]
+    public void ReservationAlreadyCancelledTest()
+    {
+        var item = new Item("testName", "testLocation");
+
+        var startDate = DateTime.Now;
+        var endDate = startDate.AddDays(1);
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
+        
+        item.CreateReservation(startDate, endDate, testPerson);
+        var sut = item.LastReservation();
+        sut.CancelReservation("1234");
+        
+        var exeption = Assert.Throws<ArgumentException>(() => sut.CancelReservation("1234"));
+
+        Assert.Equal("Reservationen er allerede aflyst", exeption.Message);
+    }   
 }

@@ -1,0 +1,15 @@
+﻿@page "/ChangeRoom"
+
+@using FrontendBooking.Components
+@using FrontendBooking.Services
+@inject SelectedRoomService RoomState
+
+<p>Chosen commonroom: <strong>@(RoomState.SelectedRoom.Name ?? "Intet rum valgt")</strong></p>
+
+<RoomPicker OnRoomSelected="@(_ => StateHasChanged())" />
+
+<h3>ChangeRoom</h3>
+
+@code {
+    
+}

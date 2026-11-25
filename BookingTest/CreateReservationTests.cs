@@ -15,7 +15,7 @@ public class CreateReservationTests
         
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
         sut.CreateReservation(startDate, endDate, testPerson);
@@ -25,7 +25,7 @@ public class CreateReservationTests
         Assert.Equal(reservationCount+1, newReservationCount);
     }
     
-    //Test for om den giver fejl når startDate er før slutdato
+    //Test for om den giver fejl når slutDate er før startdato
     [Fact]
     public void EndDateBeforeStartDateTest()
     {
@@ -33,7 +33,7 @@ public class CreateReservationTests
         
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(-1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
         var exception = Assert.Throws<ArgumentException>(() =>
@@ -52,32 +52,79 @@ public class CreateReservationTests
         
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
         var reservationCount = sut.Reservations.Count;
         
         var exception = Assert.Throws<ArgumentException>(() =>
             sut.CreateReservation(startDate, endDate, testPerson));
         
-        Assert.Equal("StartDate skal tidligst idag", exception.Message);
+        Assert.Equal("StartDate skal tidligst være idag", exception.Message);
         Assert.Equal(reservationCount, sut.Reservations.Count);
     }
     
     //Test for at sikre der ikke kan opstå dobbelt booking
     [Fact]
-    public void DobbeltBookingQuestionMarkQuestionMarkQuestionMarkQuestionMarkTest()
+    public void DobbeltBookingTest()
     {
         var sut = new Item("testName", "testLocation");
         
         var startDate = DateTime.Now;
         var endDate = startDate.AddDays(1);
-        var testPerson = new Person("testSøren", "sørentest@email.lol", "søren frichsvej", "12345678");
-        var testPerson2 = new Person("Lasse", "LasseHarEnMail@hotmail.dk", "Hjemme hos Lasse Gade", "4206942069");
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
+        var testPerson2 = new Person("Lasse", "LasseHarEnMail@hotmail.dk", "Hjemme hos Lasse Gade", "45069420");
         
         sut.CreateReservation(startDate, endDate, testPerson);
         
         var exception = Assert.Throws<InvalidOperationException>(() =>
             sut.CreateReservation(startDate, endDate, testPerson2));
         
-        Assert.Equal("Reservation is not available", exception.Message);
+        Assert.Equal("Reservationen er ikke tilgængelig", exception.Message);
+    }
+    
+    //Test for at sikre at person ikke er null
+    [Fact]
+    public void CreateReservationNullPersonTest()
+    {
+        var sut = new Item("testName", "testLocation");
+        
+        var startDate = DateTime.Now;
+        var endDate = startDate.AddDays(1);
+        
+        var exception = Assert.Throws<ArgumentException>(() =>
+            sut.CreateReservation(startDate, endDate, null));
+        
+        Assert.Equal("Bruger mangler", exception.Message);
+    }
+    
+    //Test for at sikre at startdate ikke er null
+    [Fact]
+    public void CreateReservationNullStartDateTest()
+    {
+        var sut = new Item("testName", "testLocation");
+        
+        var endDate = DateTime.Now.AddDays(1);
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
+
+        
+        var exception = Assert.Throws<ArgumentException>(() =>
+            sut.CreateReservation(default, endDate, testPerson));
+        
+        Assert.Equal("Startdato skal tilføjes", exception.Message);
+    }
+    
+    //Test for at sikre at enddate ikke er null
+    [Fact]
+    public void CreateReservationNullEndDateTest()
+    {
+        var sut = new Item("testName", "testLocation");
+        
+        var startDate = DateTime.Now;
+        var testPerson = new Person("testperson", "persontest@email.lol", "testvej", "12345678");
+
+        
+        var exception = Assert.Throws<ArgumentException>(() =>
+            sut.CreateReservation(startDate, default, testPerson));
+        
+        Assert.Equal("Slutdato skal tilføjes", exception.Message);
     }
 }

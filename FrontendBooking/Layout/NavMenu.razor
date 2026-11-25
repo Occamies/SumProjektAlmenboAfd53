@@ -1,0 +1,58 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">FrontendBooking</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Common Room
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ExtraEquipment">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Extra Equipment
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="RoomInfo">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Room Information
+            </NavLink>
+        </div>        
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Rules">
+                <span class="bi bi-book" aria-hidden="true"></span> Rules
+            </NavLink>
+        </div>   
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="HelpSite">
+                <span class="bi bi-envelope" aria-hidden="true"></span> Help
+            </NavLink>
+        </div>   
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ChangeRoom">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Change Building
+            </NavLink>
+        </div>   
+ 
+    </nav>
+</div>
+
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+}

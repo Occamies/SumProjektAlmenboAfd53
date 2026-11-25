@@ -1,0 +1,58 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@inject DialogService DialogService
+
+<RadzenStack Gap="15px">
+
+    <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+
+        <p><b>1. Opvask af køkkenredskaber og service</b></p>
+        <ul>
+            <li>Vask alle lånte køkkenredskaber, tallerkener, glas, bestik osv.</li>
+            <li>Sørg for at tømme opvaskemaskinen, hvis den er fyldt, og sæt alt rent service på plads.</li>
+        </ul>
+
+        <p><b>2. Rengøring af overflader</b></p>
+        <ul>
+            <li>Tør alle overflader af, herunder bordplader, køkkenbord, spisebord, komfur, ovn osv., med en ren klud og et passende rengøringsmiddel. Dette gælder også ude på toilettet.</li>
+        </ul>
+
+        <p><b>3. Gulvrengøring</b></p>
+        <ul>
+            <li>Støvsug gulvet i fællesrummet og ude på toilettet grundigt for at fjerne snavs, støv og krummer.</li>
+            <li>Vask gulvene med gulvrensningsmiddel og rent vand for at fjerne eventuelle pletter eller klistrede områder.</li>
+        </ul>
+
+        <p><b>4. Lukning af vinduer</b></p>
+        <ul>
+            <li>Sørg for at lukke alle vinduer efter brug for at forhindre indtrængning af insekter eller fugt.</li>
+        </ul>
+
+        <p><b>5. Fjernelse af fordærvelige fødevarer</b></p>
+        <ul>
+            <li>Kontroller køleskabe og frysere for resterende fødevarer og fjern dem.</li>
+            <li>Rengør eventuelle spild eller pletter i køleskabet for at forhindre lugt og bakterievækst.</li>
+        </ul>
+
+        <p><b>6. Tømning af skraldespande</b></p>
+        <ul>
+            <li>Tøm alle skraldespande i fællesrummet og på toilettet. Tør af, hvis der er spildt efter skraldet.</li>
+        </ul>
+
+        <p><b>7. Tilbagelevering af nøgler</b></p>
+        <ul>
+            <li>Sørg for at lånt nøgle til fællesrummet returneres til nøgleboksen.</li>
+        </ul>
+
+        <p><b>8. Ødelagt inventar</b></p>
+        <ul>
+            <li>Er der ødelagt inventar, meldes det til ansvarshavende med det samme.</li>
+        </ul>
+
+    </div>
+
+    <RadzenButton Text="Luk"
+                  ButtonStyle="ButtonStyle.Light"
+                  Click="@(() => DialogService.Close())" />
+
+</RadzenStack>

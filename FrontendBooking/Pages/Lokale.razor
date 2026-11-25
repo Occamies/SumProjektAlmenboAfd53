@@ -1,0 +1,152 @@
+﻿@page "/"
+@using FrontendBooking.Components
+@using FrontendBooking.Services
+@inject DialogService DialogService
+@using API.DTOs
+@inject SelectedRoomService RoomState
+@inject HttpClient http
+@implements IDisposable
+
+<h1>Lokale @RoomState.SelectedRoom?.Name</h1>
+
+
+<RadzenScheduler TItem="ReservationDto"
+                 Data="@Bookings"
+                 StartProperty="@nameof(ReservationDto.StartDate)"
+                 EndProperty="@nameof(ReservationDto.EndDate)"
+                 TextProperty= "@nameof(ReservationDto.Name)"
+                 Height="600px"
+                 @bind-SelectedDate="@selectedDate"
+                 View="SchedulerView.Month"
+                 SlotSelect="@OnSlotSelect"
+                 AppointmentSelect="@OnAppointmentSelect">
+
+    <RadzenMonthView />
+    <RadzenWeekView />
+    <RadzenDayView />
+</RadzenScheduler>
+
+
+@code {
+    DateTime selectedDate = DateTime.Today;
+
+    ReservationDto? selectedBooking;
+    
+
+    // Eksempelbookinger i kalenderen
+    List<ReservationDto> Bookings { get; set; } = [];
+
+    // Når brugeren vælger en dato i kalenderen
+    public async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
+    {
+        await OpenBookingDialog(args.Start.Date);
+    }
+
+    // Når brugeren klikker på en eksisterende booking
+    public async Task OnAppointmentSelect(
+        SchedulerAppointmentSelectEventArgs<ReservationDto> args)
+    {
+        await OpenCancelDialog(args.Data);
+    }
+
+    public async Task OpenCancelDialog(ReservationDto reservation)
+    {
+        var result = await DialogService.OpenAsync<CancelBooking>(
+            "Annuller booking",
+            new Dictionary<string, object?>
+            {
+                { "Reservation", reservation }
+            },
+            new DialogOptions
+            {
+                Width = "min(90vw, 450px)",
+                CloseDialogOnOverlayClick = false
+            });
+
+        if (result is true)
+        {
+            await RoomState.LoadReservationsByRoom(http);
+            Bookings = RoomState.Bookings;
+        }
+    }
+
+    // Åbner bookingdialogen
+    public async Task OpenBookingDialog(DateTime date)
+    {
+        
+        if (RoomState.SelectedRoom == null)
+        {
+            await DialogService.Alert(
+                "Du skal vælge et lokale først.",
+                "Intet lokale valgt");
+
+            return;
+        }
+        
+        var result = await DialogService.OpenAsync<BookingDialog>(
+            "Book fællesrum",
+            new Dictionary<string, object?>
+            {
+                { "StartDate", date },
+                {"SelectedRoom", RoomState.SelectedRoom}
+            },
+            new DialogOptions
+            {
+                Width = "min(90vw, 600px)",
+                CloseDialogOnOverlayClick = false
+            }
+        );
+
+        // Modtag bookingoplysninger fra BookingDialog
+        if (result is ReservationDto bookingData)
+        {
+            if (!IsDateAvailable(bookingData.StartDate, bookingData.EndDate))
+            {
+                await DialogService.Alert(
+                    "Vælg venligst en anden dato.",
+                    "Datoen er ikke ledig");
+
+                return;
+            }
+
+            // Opret booking i kalenderen
+            Bookings.Add(bookingData);
+
+            // Opdater kalenderens dataliste
+            Bookings = Bookings.ToList();
+        }
+    }
+
+    private bool IsDateAvailable(DateTime start, DateTime end)
+    {
+        if (start.Date < DateTime.Today)
+        {
+            return false;
+        }
+
+        return !Bookings.Any(booking =>
+            start <= booking.EndDate &&
+            end > booking.StartDate);
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        RoomState.OnChange += UpdateBookings;
+        await RoomState.LoadReservationsByRoom(http);
+        Bookings = RoomState.Bookings;
+    }
+    
+    //disse ændrer data i kalenderen når der skiftes lokale. dispose nulstiller og update finder de korrekte bookinger.
+    private void UpdateBookings()
+    {
+        Bookings = RoomState.Bookings;
+        InvokeAsync(StateHasChanged);
+    }
+    
+    public void Dispose()
+    {
+        RoomState.OnChange -= UpdateBookings;
+    }
+
+
+}

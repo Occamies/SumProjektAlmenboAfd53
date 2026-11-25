@@ -1,12 +1,12 @@
 ﻿### For Testing purposes.
 @host=http://localhost:5108
 @personId=eb6dfaab-c94b-45d8-85f3-60029be69d8d
-@lokaleId=394f95fc-286e-4b10-95d0-a4b2ea0dafdc
+@lokaleId=f8694389-595e-471d-98b7-ceb7287f4711
 @udstyrId=6f508495-b7b4-4c2e-b554-b51acab071c8
 @contracId=50114a4a-dbbe-44e1-8e61-f8af2cbc3a74
 @itemId=81ec8adc-2872-4c48-ac36-94516971f5bc
-@personIdTilReservation=9ef3591e-eb55-46e9-9ca2-62c773a3a7b9
-@itemIdTilReservation=164f55af-0159-4dea-9911-09d073a7a603
+@personIdTilReservation=d5462475-9402-4611-8a68-37ab935bd647
+@itemIdTilReservation=9ec494cd-678e-4f81-9930-39131f4d3e69
 @reservationId=12859f7f-7538-40cb-b820-ec707676de56
 
 ### Hent alle personer fra PostgreSQL
@@ -61,7 +61,7 @@ POST {{host}}/api/room
 Content-Type: application/json
 
 {
-  "name": "Fælleslokale",
+  "name": "Fælleslokale 1",
   "location": "Stueetagen"
 }
 
@@ -83,6 +83,21 @@ DELETE {{host}}/api/room/{{lokaleId}}
 
 ####################################################################################
 
+### Hent inventory af specifikt lokale fra PostgreSQL
+GET {{host}}/api/room/{{lokaleId}}/inventory
+Accept: application/json
+
+### Opret en item til et lokale
+POST {{host}}/api/room/{{lokaleId}}/inventory
+Content-Type: application/json
+
+{
+  "name": "Settlers",
+  "location": "Skabet"
+}
+
+####################################################################################
+
 ### 1. Hent alt ekstraudstyr
 GET {{host}}/api/extraequipment
 Accept: application/json
@@ -93,8 +108,9 @@ POST {{host}}/api/extraequipment
 Content-Type: application/json
 
 {
-  "name": "Projektor",
-  "location": "Depot"
+  "name": "Fodbold",
+  "location": "Depot",
+  "deposit": 0
 }
 
 
@@ -189,14 +205,16 @@ Content-Type: application/json
 {
   "itemId": "{{itemIdTilReservation}}",
   "personId": "{{personIdTilReservation}}",
-  "startDate": "2026-12-15T10:00:00Z",
-  "endDate": "2026-12-15T14:00:00Z"
+  "startDate": "2026-12-24T12:00:00Z",
+  "endDate": "2026-12-26T11:00:00Z"
 }
 
 
 ### 3 GET - Hent reservation efter ID
 GET {{host}}/api/Reservation/{{reservationId}}
 Accept: application/json
+
+
 
 
 ### 4. POST - Test dobbeltbooking

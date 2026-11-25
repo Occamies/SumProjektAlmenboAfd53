@@ -1,0 +1,197 @@
+﻿
+@using System.Net
+@using API.DTOs
+@using Radzen
+@using Radzen.Blazor
+@using FrontendBooking.Components
+@using FrontendBooking.Services
+@inject DialogService DialogService
+@inject HttpClient http
+@inject SelectedRoomService RoomState
+
+<RadzenStack Gap="15px" Orientation="Orientation.Horizontal">
+
+    @* Bookingperiode og ekstra equipment *@
+    <RadzenStack Gap="15px">
+        <h3>@SelectedRoom?.Name</h3>
+
+        <RadzenText Text="Bookingperiode"
+                    TextStyle="TextStyle.H5"/>
+
+        <b>Valgt dato</b>
+        <p>Startdato: @StartDate.ToString("dd-MM-yyyy") kl. 12.00</p>
+        <p>Slutdato: @EndDate.ToString("dd-MM-yyyy") kl. 11.00</p>
+
+        <RadzenStack Gap="5px" Orientation="Orientation.Horizontal">
+            <RadzenLabel Text="Antal dage"/>
+            <RadzenNumeric @bind-Value="@numberOfDays"
+                           Min="1"
+                           Max="7"
+                           Style="min-width: 20%"/>
+        </RadzenStack>
+
+        @* Vis det valgte ekstra equipment *@
+        @if (selectedEquipment.Any(x => x.Count > 0))
+        {
+            <div>
+                <b>Valgt ekstra equipment:</b>
+                @foreach (var item in selectedEquipment.Where(x => x.Count > 0))
+                {
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <p>@item.Name: @item.Count stk.</p>
+
+                        @if (item.Depositum > 0)
+                        {
+                            <p>Depositum: @(item.Depositum * item.Count) kr.</p>
+                        }
+                    </RadzenStack>
+                }
+            </div>
+        }
+
+    </RadzenStack>
+
+    @* Personoplysninger *@
+    <RadzenStack Gap="15px" Orientation="Orientation.Vertical">
+
+        <RadzenText Text="Personoplysninger"
+                    TextStyle="TextStyle.H5"/>
+
+        <RadzenTextBox @bind-Value="@fullName"
+                       Placeholder="Full name"
+                       Style="width: 100%"/>
+
+        <RadzenTextBox @bind-Value="@email"
+                       Placeholder="E-mail"
+                       Style="width: 100%"/>
+
+        <RadzenTextBox @bind-Value="@phone"
+                       Placeholder="Phone"
+                       Style="width: 100%"/>
+
+        <RadzenTextBox @bind-Value="@address"
+                       Placeholder="Address"
+                       Style="width: 100%"/>
+
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="8px">
+            <RadzenCheckBox @bind-Value="acceptedTerms" TValue="bool" Name="acceptTerms"/>
+            <span>
+                Jeg accepterer
+                <a href="#" @onclick="OpenContractDialog" @onclick:preventDefault="true">regler og vilkår</a>
+            </span>
+        </RadzenStack>
+
+        <RadzenButton Text="Book"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Disabled="@(!acceptedTerms)"
+                      Click="@Submit"/>
+
+
+    </RadzenStack>
+
+</RadzenStack>
+
+@code {
+
+    [Parameter] public DateTime StartDate { get; set; }
+    [Parameter] public RoomDto? SelectedRoom { get; set; }
+
+    int numberOfDays = 1;
+
+    string fullName = "";
+    string email = "";
+    string phone = "";
+    string address = "";
+    bool acceptedTerms;
+
+    DateTime EndDate => StartDate.Date.AddDays(numberOfDays).AddHours(11);
+
+    // Liste med det valgte equipment
+    List<EkstraEquipmentDialog.EquipmentItem> selectedEquipment = new();
+
+    // åbner ContractDialog, til at se regler og vilkår
+    private async Task OpenContractDialog()
+    {
+        await DialogService.OpenAsync<ContractDialog>(
+            "Regler og vilkår",
+            null,
+            new DialogOptions
+            {
+                Width = "min(90vw, 500px)"
+            });
+    }
+
+    // Åbner modalvinduet med ekstra equipment
+    private async Task OpenEquipmentDialog()
+    {
+        var result = await DialogService.OpenAsync<EkstraEquipmentDialog>(
+            "Ekstra equipment",
+            null,
+            new DialogOptions
+            {
+                Width = "min(650px, 95vw)",
+                CloseDialogOnOverlayClick = false
+            });
+
+        if (result is List<EkstraEquipmentDialog.EquipmentItem> equipment)
+        {
+            selectedEquipment = equipment;
+        }
+    }
+
+    async void Submit()
+    {
+        if (string.IsNullOrWhiteSpace(fullName) ||
+            string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(phone) ||
+            string.IsNullOrWhiteSpace(address))
+        {
+            return;
+        }
+
+        if (!acceptedTerms)
+            return;
+
+        PersonDto person = new PersonDto(fullName, email, address, phone);
+
+        var response = await http.PostAsJsonAsync("api/person", person);
+
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await DialogService.Alert("Personen kunne ikke oprettes. Prøv igen.", "Fejl");
+            return;
+        }
+        
+            person = await response.Content.ReadFromJsonAsync<PersonDto>();
+            
+        //ReservationDto reservation = new ReservationDto(RoomState.SelectedRoom.Id, person.Id, StartDate, EndDate);
+
+        var createDto = new CreateReservationDto
+        {
+            ItemId = RoomState.SelectedRoom.Id,
+            PersonId = person.Id,
+            StartDate = StartDate,
+            EndDate = EndDate,
+            Contract = new CreateContractDto { Date = DateOnly.FromDateTime(DateTime.Today) }
+        };
+
+        var responseReservation = await http.PostAsJsonAsync("api/reservation", createDto);
+
+        if (!responseReservation.IsSuccessStatusCode)
+        {
+            // Controlleren returnerer en læsbar tekst ved 400/409, fx "Reservationen er ikke tilgængelig"
+            var message = responseReservation.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.Conflict
+                ? await responseReservation.Content.ReadAsStringAsync()
+                : "Noget gik galt. Prøv igen.";
+
+            await DialogService.Alert(message, "Reservationen kunne ikke oprettes");
+            return;
+        }
+
+        var reservation = await responseReservation.Content.ReadFromJsonAsync<ReservationDto>();
+
+        DialogService.Close(reservation);
+    }
+
+}
