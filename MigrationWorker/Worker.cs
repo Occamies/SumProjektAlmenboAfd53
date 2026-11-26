@@ -9,6 +9,7 @@ using API;
 
 namespace MigrationWorker;
 
+// Design af migrationworker lånt fra microsoft. https://aspire.dev/integrations/databases/efcore/migrations/
 public class Worker(
     IServiceProvider serviceProvider,
     IHostApplicationLifetime hostApplicationLifetime) : BackgroundService
